@@ -3,15 +3,24 @@ package
 	import assetloader.Asset;
 	import assetloader.AssetLoader;
 	import assetloader.AssetLoaderEvent;
-	import flash.display.*;
+	
+	import flash.display.MovieClip;
+	import flash.display.Sprite;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.net.*;
 	import flash.system.*;
 	import flash.text.TextField;
+	import flash.utils.getQualifiedClassName;
+	
 	import geom.Polygon;
+	
 	import helpers.*;
-	import screens.*;
+	
+	import screens.Screen;
+	import screens.TentScene;
 	
 	[SWF(width = "960", height = "640")]
 	public class Main extends Sprite
@@ -29,7 +38,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.frameRate = 60;
-			//stage.color = 0x000000;
+			stage.color = 0x000000;
 			
 			var assets:Object = {
 				"art": { URI: "content.swf", AssetType: Asset.GRAPHICS }
@@ -41,7 +50,8 @@ package
 		}
 		
 		private function onAssetsLoaded (e:AssetLoaderEvent) : void
-		{		
+		{
+			trace ("All assets loaded!");
 			var art:ApplicationDomain = e.AssetLoaded["art"].Value;
 			addChild (container);
 			
@@ -56,9 +66,12 @@ package
 			
 			addEventListener (Event.ENTER_FRAME, onEnterFrame);
 			stage.addEventListener (MouseEvent.CLICK, onInputTouch);
-			stage.addEventListener (TouchEvent.TOUCH_END, onInputTouch);
 			stage.addEventListener (MouseEvent.MOUSE_MOVE, onInputMove);
 			stage.addEventListener (TouchEvent.TOUCH_MOVE, onInputMove);
+			stage.addEventListener (TouchEvent.TOUCH_END, function(e:*):void {
+				onInputMove (e);
+				onInputTouch (e);
+			});
 			stage.addEventListener (Event.RESIZE, onResize);
 			
 			onResize (null);
@@ -66,6 +79,7 @@ package
 		
 		public function GotoScreen (s:Screen) : void
 		{
+			trace ("Going to screen: " + flash.utils.getQualifiedClassName(s));
 			Check.ArgNull (s, "screen");
 			
 			if (current != null) {
@@ -84,6 +98,7 @@ package
 		
 		private function onResize (e:Event) : void
 		{
+			trace ("Resizing to " + this.stage.stageWidth + "x" + this.stage.stageHeight);
 			this.scaleX = this.scaleY = this.stage.stageWidth / 1280;
 			this.y = (stage.stageHeight / 2) - (this.height / 2);
 			
