@@ -5,17 +5,18 @@ package
 	import flash.geom.Point;
 	import geom.Polygon;
 	import geom.PolyNode;
-	import screens.Screen;
+	import levels.Level;
+	
 	public class ScreenDebugger 
 	{		
-		public static function DrawDebug (screen:Screen) : void
+		public static function DrawDebug (level:Level) : void
 		{
 			var s:Sprite = new Sprite();
-			for each (var node:PolyNode in screen.NavMesh)
+			for each (var node:PolyNode in level.NavMesh)
 				DrawPolygon (s.graphics, node.poly, 0x0074B9);
-			for each (var spot:Hotspot in screen.Spots)
+			for each (var spot:Hotspot in level.Spots)
 				DrawPolygon (s.graphics, spot, spot.clip ? 0xFF0000 : 0x00FF00);
-			screen.Content.addChild (s);
+			level.Content.addChild (s);
 		}
 		
 		public static function DrawPolygon (g:Graphics, poly:Polygon, color:int) : void

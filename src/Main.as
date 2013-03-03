@@ -1,13 +1,8 @@
 package 
 {
-	import assetloader.Asset;
-	import assetloader.AssetLoader;
-	import assetloader.AssetLoaderEvent;
+	import assetloader.*;
 	
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
+	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.net.*;
@@ -19,17 +14,19 @@ package
 	
 	import helpers.*;
 	
-	import screens.Screen;
-	import screens.TentScene;
+	import levels.*;
 	
 	[SWF(width = "960", height = "640")]
 	public class Main extends Sprite
 	{
+		public static var tent:TentLevel;
+		public static var camp:CampLevel;
+		public static var forest:ForestLevel;
+		
 		public static var inst:Main;
 		public static var player:Player;
-		public static var tent:TentScene;
-		public static var current:Screen;
-		public static var lastScreen:Screen;
+		public static var current:Level;
+		public static var lastScreen:Level;
 		public static var soundManager:SoundManager;
 		
 		public function Main():void
@@ -56,9 +53,13 @@ package
 			addChild (container);
 			
 			player = new Player (art);
-			tent = new TentScene (art);
+			tent = new TentLevel (art);
+			camp = new CampLevel (art);
+			forest = new ForestLevel (art);
 			GotoScreen (tent);
-			//ScreenDebugger.DrawDebug (tent);
+			ScreenDebugger.DrawDebug (tent);
+			ScreenDebugger.DrawDebug (camp);
+			ScreenDebugger.DrawDebug (forest);
 			
 			var ui:MovieClip = MCHelper.FromAppDomain (art, "interface");
 			addChild (mouseHint = ui.mouseHint);
@@ -77,18 +78,20 @@ package
 			onResize (null);
 		}
 		
-		public function GotoScreen (s:Screen) : void
+		public function GotoScreen (level:Level) : void
 		{
-			trace ("Going to screen: " + flash.utils.getQualifiedClassName(s));
-			Check.ArgNull (s, "screen");
+			Check.ArgNull (level, "level");
+			trace ("Going to screen: " + flash.utils.getQualifiedClassName(level));
 			
 			if (current != null) {
 				container.removeChild (current.Content);
 			}
-			current = s;
-			container.addChild (s.Content);
-			s.Content.addChildAt (player.clip, s.Content.getChildIndex (s.LayerHolder));
-			s.OnEnter();
+			current = level;
+			container.addChild (current.Content);
+			var index:int = current.Content.getChildIndex (current.LayerHolder);
+			current.Content.addChildAt (player.clip, index);
+			current.OnEnter();
+			current = level;
 		}
 		
 		private var ui:MovieClip;

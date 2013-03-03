@@ -17,8 +17,8 @@ package geom
 		{
 			var a:* = new PolyLink (x, y);
 			var b:* = new PolyLink (x, y);
-			a.Target = b;
-			b.Target = a;
+			a.target = b;
+			b.target = a;
 			n1.AddLink (a);
 			n2.AddLink (b);			
 		}

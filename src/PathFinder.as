@@ -4,14 +4,14 @@ package
 	import geom.Polygon;
 	import geom.PolyLink;
 	import geom.PolyNode;
-	import screens.Screen;
+	import levels.Level;
 	
 	public class PathFinder
 	{
 		public static function CalculatePath (start:Point, end:Point, n:Vector.<PolyNode>) : Vector.<Point>
 		{
-			var startPoly:PolyNode = Screen.FindNavPoly (n, start);
-			var endPoly:PolyNode = Screen.FindNavPoly (n, end);
+			var startPoly:PolyNode = Level.FindNavPoly (n, start);
+			var endPoly:PolyNode = Level.FindNavPoly (n, end);
 
 			var currentPoly:PolyNode = startPoly;
 			var route:Vector.<Point> = new <Point> [start];
