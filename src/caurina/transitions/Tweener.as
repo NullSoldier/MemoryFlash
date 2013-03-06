@@ -909,12 +909,12 @@ package caurina.transitions {
 	
 				if (isOver && Boolean(tTweening.onComplete) && !tTweening.isComplete) {
 					eventScope = Boolean(tTweening.onCompleteScope) ? tTweening.onCompleteScope : tScope;
-					try {
+					//try {
 						tTweening.onComplete.apply(eventScope, tTweening.onCompleteParams);
 						tTweening.isComplete = true;
-					} catch(e4:Error) {
-						handleError(tTweening, e4, "onComplete");
-					}
+					//} catch(e4:Error) {
+					// handleError(tTweening, e4, "onComplete");
+					//}
 				}
 
 				return (!isOver);

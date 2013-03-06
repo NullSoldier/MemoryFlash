@@ -27,84 +27,10 @@ package levels
 			NavMesh = new <PolyNode> [pnode];
 			
 			Content = MCHelper.FromAppDomain (art, "TentScene");
-			Content.lantern.gotoAndStop(1);
-			Content.blanket.gotoAndStop(1);
-			Content.light1.visible = true;
-			Content.matches.visible = false;
+			
 			
 			LayerHolder = Content.holder;
 			LayerHolder.visible = false;
-			
-			bag = CreateHotspot (null,
-				"Duffle Bag",
-				true, true,
-				new Polygon ([
-					new Point (757, 443),
-					new Point (883, 417),
-					new Point (902, 489),
-					new Point (776, 507),
-					new Point (745, 483)]),
-				onBagTouched);
-			
-			lantern = CreateHotspot (Content.lantern,
-				"Lantern OFF",
-				true, true,
-				PolyFactory.CreateCircle (530, 315, 64),
-				onLanternTouched);
-			
-			CreateHotspot (Content.blanket,
-				"Blanket",
-				true, true,
-				new Polygon ([
-					new Point (0+150, 41+506),
-					new Point (256+150, -6+506),
-					new Point (419+150, 91+506),
-					new Point (296 + 150, 153 + 506)]),
-				onBlanketTouched);
-			
-			exit = CreateHotspot (null, "Tent Exit",
-				true, true,
-				new Polygon ([
-					new Point (620 + 90, 250),
-					new Point (607 + 90, 373),
-					new Point (575 + 90, 459),
-					new Point (650 + 90, 468),
-					new Point (675 + 90, 374),
-					new Point (657 + 90, 299)]),
-				onExitTouched);
-			
-			sweater = CreateHotspot (null, "Sarah's Sweater",
-				false, false,
-				new Polygon ([
-					new Point (426-100, 563),
-					new Point (513-100, 551),
-					new Point (603-100, 559),
-					new Point (619-100, 594),
-					new Point (566-100, 645),
-					new Point (496-100, 633)]),
-				onSweaterTouched);
-			
-			CreateHotspot (Content.flashlight, "Flashlight",
-				true, true,
-				new Polygon ([
-					new Point (568 - 300, 493 - 0),
-					new Point (575 - 300, 427 - 0),
-					new Point (630 - 300, 433 - 0),
-					new Point (634 - 300, 484 - 0)]),
-				onFlashlightTouched);
-			
-			CreateHotspot (Content.matches, "Matches",
-				true, true,
-				new Polygon ([
-					new Point (830 - 0, 505 - 0),
-					new Point (892 - 0, 491 - 0),
-					new Point (905 - 0, 516 - 0),
-					new Point (844 - 0, 532 - 0)]),
-				onMatchesTouched);
-			
-			lantern.moveTo = new Point (524, 513);
-			bag.moveTo = new Point (776, 512);
-			exit.moveTo = new Point (702, 469);
 		}
 		
 		public override function OnEnter() : void

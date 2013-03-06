@@ -1,6 +1,7 @@
 package  
 {
 	import flash.geom.Point;
+	
 	import geom.Polygon;
 	public class PolyFactory 
 	{	
@@ -16,6 +17,17 @@ package
 				verts.push (new Point (ptx, pty));
 			}
 			return new Polygon (verts);
+		}
+		
+		public static function CreateRectangle (x:int, y:int,
+			width:int, height:int) : Polygon
+		{
+			return new Polygon ([
+				new Point (x, y),
+				new Point (x+width, y),
+				new Point (x+width, y+height),
+				new Point (x, y+height)
+			]);
 		}
 	}
 }

@@ -1,10 +1,12 @@
 package  
 {
-	import caurina.transitions.Tweener;
 	import caurina.transitions.TweenTask;
+	import caurina.transitions.Tweener;
+	
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
+	
 	import helpers.*;
 	
 	public class Player 
@@ -13,14 +15,32 @@ package
 		{
 			clip = MCHelper.FromAppDomain (art, "player");
 			moveQueue = new Vector.<Point>();
+			items = new Vector.<GameItem>();
 		}
 		
 		public var clip:MovieClip;
-		public var target:Hotspot;
+		public var items:Vector.<GameItem>;
 		public var moveQueue:Vector.<Point>;
 		public var isWalking:Boolean;
+		public var target:Hotspot;
+		public var itemAdded:Function;
+		public var itemRemoved:Function;
+		
+		
 		public function get pos() : Point { return new Point (clip.x, clip.y); }
 		public function set pos (v:Point) : void { clip.x = v.x; clip.y = v.y; }
+		
+		public function hasItem (name:String) : Boolean
+		{
+			return items.indexOf (name) != -1;
+		}
+		
+		public function addItem (item:GameItem) : void
+		{
+			items.push (item);
+			if (itemAdded != null)
+				itemAdded (item);
+		}
 		
 		public function moveTo (dest:Point, target:*) : void
 		{
@@ -77,7 +97,7 @@ package
 			isMoving = false;
 			
 			if (moveQueue.length == 0 && target != null) {
-				target.activated (target);
+				target.activate();
 				target = null;
 			}
 		}

@@ -10,8 +10,8 @@ package
 	{
 		public static function CalculatePath (start:Point, end:Point, n:Vector.<PolyNode>) : Vector.<Point>
 		{
-			var startPoly:PolyNode = Level.FindNavPoly (n, start);
-			var endPoly:PolyNode = Level.FindNavPoly (n, end);
+			var startPoly:PolyNode = PolyCheck.PointInNavMesh (start, n);
+			var endPoly:PolyNode = PolyCheck.PointInNavMesh (end, n);
 
 			var currentPoly:PolyNode = startPoly;
 			var route:Vector.<Point> = new <Point> [start];

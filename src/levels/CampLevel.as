@@ -2,15 +2,19 @@ package levels
 {
 	import flash.display.MovieClip;
 	import flash.display.Scene;
-	import flash.system.ApplicationDomain;
-	import helpers.*;
-	import geom.*;
 	import flash.geom.Point;
+	import flash.system.ApplicationDomain;
+	
+	import geom.*;
+	
+	import helpers.*;
 	
 	public class CampLevel extends Level
 	{		
 		public function CampLevel (art:ApplicationDomain)
 		{
+			this.art = art;
+			
 			var p1:* = new Polygon ([
 				new Point(151, 274),
 				new Point(331, 257),
@@ -63,76 +67,51 @@ package levels
 			LayerHolder = Content.holder;
 			LayerHolder.visible = false;
 			
-			bag = CreateHotspot (null,
-				"Duffle Bag",
-				true, true,
+			tent = CreateHotspot (null, "Tent Entrance",
+				HO.IS_ENABLED,
 				new Polygon ([
-					new Point (757, 443),
-					new Point (883, 417),
-					new Point (902, 489),
-					new Point (776, 507),
-					new Point (745, 483)]),
-				onBagTouched);
+					new Point (3, 277),
+					new Point (333, 247),
+					new Point (83, 107),
+					new Point (2, 107)]),
+				onTentTouched);
+				
+			forest = CreateHotspot (null, "Dark Forest Entrance",
+				HO.IS_ENABLED,
+				new Polygon([
+					new Point (1087, 281),
+					new Point (1075, 110),
+					new Point (1277, 114),
+					new Point (1268, 301)]),
+				onForestTouched);
 			
-			lantern = CreateHotspot (Content.lantern,
-				"Lantern OFF",
-				true, true,
-				PolyFactory.CreateCircle (530, 315, 64),
-				onLanternTouched);
+			fire = CreateHotspot (null, "Unlit fire",
+				HO.IS_ENABLED,
+				new Polygon([
+					new Point (50, 465),
+					new Point (184, 412),
+					new Point (307, 458),
+					new Point (290, 503),
+					new Point (194, 526),
+					new Point (97, 518)]),
+				onFireTouched);
 			
-			CreateHotspot (Content.blanket,
-				"Blanket",
-				true, true,
-				new Polygon ([
-					new Point (0+150, 41+506),
-					new Point (256+150, -6+506),
-					new Point (419+150, 91+506),
-					new Point (296 + 150, 153 + 506)]),
-				onBlanketTouched);
+			backpack = CreateHotspot (Content.backpack, "Backpack",
+				HO.IS_ENABLED | HO.WILL_DISABLE,
+				PolyFactory.CreateRectangle (798, 410, 120, 60),
+				onBackpackTouched);
 			
-			exit = CreateHotspot (null, "Tent Exit",
-				true, true,
-				new Polygon ([
-					new Point (620 + 90, 250),
-					new Point (607 + 90, 373),
-					new Point (575 + 90, 459),
-					new Point (650 + 90, 468),
-					new Point (675 + 90, 374),
-					new Point (657 + 90, 299)]),
-				onExitTouched);
+			letter = CreateHotspot (Content.letter, "Letter",
+				HO.IS_CONSUMED,
+				PolyFactory.CreateRectangle (889, 475, 100, 30),
+				onLetterTouched);
 			
-			sweater = CreateHotspot (null, "Sarah's Sweater",
-				false, false,
-				new Polygon ([
-					new Point (426-100, 563),
-					new Point (513-100, 551),
-					new Point (603-100, 559),
-					new Point (619-100, 594),
-					new Point (566-100, 645),
-					new Point (496-100, 633)]),
-				onSweaterTouched);
+			batteries = CreateHotspot (Content.batteries, "Batteries",
+				HO.IS_CONSUMED,
+				PolyFactory.CreateRectangle (836, 480, 60, 37),
+				onBatteriesTouched);
 			
-			CreateHotspot (Content.flashlight, "Flashlight",
-				true, true,
-				new Polygon ([
-					new Point (568 - 300, 493 - 0),
-					new Point (575 - 300, 427 - 0),
-					new Point (630 - 300, 433 - 0),
-					new Point (634 - 300, 484 - 0)]),
-				onFlashlightTouched);
-			
-			CreateHotspot (Content.matches, "Matches",
-				true, true,
-				new Polygon ([
-					new Point (830 - 0, 505 - 0),
-					new Point (892 - 0, 491 - 0),
-					new Point (905 - 0, 516 - 0),
-					new Point (844 - 0, 532 - 0)]),
-				onMatchesTouched);
-			
-			lantern.moveTo = new Point (524, 513);
-			bag.moveTo = new Point (776, 512);
-			exit.moveTo = new Point (702, 469);
+			tent.moveTo = new Point (229, 290);
 		}
 		
 		public override function OnEnter() : void
@@ -145,61 +124,46 @@ package levels
 			}
 		}
 		
-		private var lantern:Hotspot;
-		private var bag:Hotspot;
-		private var exit:Hotspot;
-		private var sweater:Hotspot;
+		private var art:ApplicationDomain;
+		private var fire:Hotspot;
+		private var batteries:Hotspot;
+		private var letter:Hotspot;
+		private var tent:Hotspot;
+		private var forest:Hotspot;
+		private var backpack:Hotspot;
 		
-		private function onBlanketTouched (h:Hotspot) : void
+		private function onFireTouched (h:Hotspot) : void
 		{
-			//Main.soundManager.PlaySoundEffect ("blanket");
-			Content.blanket.gotoAndStop (2);
-			h.isActive = false;
-			h.canMouseOver = false;
-			sweater.isActive = true;
-			sweater.canMouseOver = true;
+			Content.firelight.visible = false;
+			Content.fire.visible = true;
+			h.name = "Crackling fire";
 		}
 		
-		private function onLanternTouched (h:Hotspot) : void
+		private function onBatteriesTouched (h:Hotspot) : void
 		{
-			//Main.soundManager.PlaySoundEffect ("lantern");
-			Content.light1.visible = !Content.light1.visible;
-			h.name = "Lantern " + (Content.light1.visible ? "ON" : "OFF");
+			Main.player.addItem (new GameItem ("Batteries",
+				"Your tongue hurts - they are supprisingly strong",
+				art.getDefinition ("batteryIcon") as Class));
 		}
 		
-		private function onBagTouched (h:Hotspot) : void
+		private function onLetterTouched (h:Hotspot) : void
 		{
-			Content.matches.visible = true;
-			h.isActive = false;
-			h.canMouseOver = false;
 		}
 		
-		private function onSweaterTouched (h:Hotspot) : void
+		private function onTentTouched (h:Hotspot) : void
 		{
-			//Main.soundManager.PlaySoundEffect ("sweater");
-			Content.sweater.visible = false;
-			h.isActive = false;
-			h.canMouseOver = false;
+			Main.inst.GotoScreen (Main.tent);
 		}
 		
-		private function onFlashlightTouched (h:Hotspot) : void
-		{
-			Content.flashlight.visible = false;
-			h.isActive = false;
-			h.canMouseOver = false;
-		}
-		
-		private function onMatchesTouched (h:Hotspot) : void
-		{
-			Content.matches.visible = false;
-			h.isActive = false;
-			h.canMouseOver = false;
-		}
-		
-		private function onExitTouched (h:Hotspot) : void
+		private function onForestTouched (h:Hotspot) : void
 		{
 			Main.inst.GotoScreen (Main.forest);
-			//Main.soundManager.PlaySoundEffect ("zipper");
+		}
+		
+		private function onBackpackTouched (h:Hotspot) : void
+		{
+			batteries.enable();
+			letter.enable();
 		}
 	}
 }

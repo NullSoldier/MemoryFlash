@@ -55,15 +55,18 @@ package
 			player = new Player (art);
 			tent = new TentLevel (art);
 			camp = new CampLevel (art);
-			forest = new ForestLevel (art);
+			//forest = new ForestLevel (art);
 			GotoScreen (tent);
 			ScreenDebugger.DrawDebug (tent);
-			ScreenDebugger.DrawDebug (camp);
-			ScreenDebugger.DrawDebug (forest);
+			//ScreenDebugger.DrawDebug (camp);
+			//ScreenDebugger.DrawDebug (forest);
 			
 			var ui:MovieClip = MCHelper.FromAppDomain (art, "interface");
-			addChild (mouseHint = ui.mouseHint);
-			mouseHint.visible = false;
+			stage.addChild (ui);
+			inventory = new InventoryControl (ui, player, art);
+			
+			addChild (inputHint = ui.mouseHint);
+			inputHint.visible = false;
 			
 			addEventListener (Event.ENTER_FRAME, onEnterFrame);
 			stage.addEventListener (MouseEvent.CLICK, onInputTouch);
@@ -96,8 +99,9 @@ package
 		
 		private var ui:MovieClip;
 		private var container:Sprite = new Sprite();
-		private var mousedHotspot:Hotspot;
-		private var mouseHint:TextField;
+		private var inputTarget:*;
+		private var inputHint:TextField;
+		private var inventory:InventoryControl;
 		
 		private function onResize (e:Event) : void
 		{
@@ -105,55 +109,57 @@ package
 			this.scaleX = this.scaleY = this.stage.stageWidth / 1280;
 			this.y = (stage.stageHeight / 2) - (this.height / 2);
 			
-			mouseHint.x = 10;
-			mouseHint.y = 720 - mouseHint.height - 20;
+			inputHint.x = 10;
+			inputHint.y = 720 - inputHint.height - 20;
 		}
 		
 		private function onEnterFrame (e:Event) : void
 		{
-			if (current == null)
-				return;
-				
+			if (current == null) return;
 			player.update();
 		}
 		
 		private function onInputTouch (e:*) : void
 		{
+			var srcPoly:Polygon = PolyCheck.PointInLevelPoly (player.pos, current);
 			var stageLoc:Point = new Point (e.stageX, e.stageY);
 			var local:Point = current.Content.globalToLocal (stageLoc);
-			trace ("Clicked " + local.toString());
+			resolveInputTarget (stageLoc);
 			
-			var srcPoly:Polygon = current.FindPoly (player.pos);
-			var clickedPoly:Polygon = current.FindPoly (local);
-			
-			// Clicked a hotspot?
-			if (mousedHotspot && mousedHotspot.isActive) {
-				var to:Point = mousedHotspot.moveTo ? mousedHotspot.moveTo : local;
-				player.moveTo (to, mousedHotspot);
-				return;
-			}
-			
-			// Clicked the ground?
-			if (clickedPoly != null) {
+			if (inputTarget is GameItem) {
+				//TODO: show description
+			} else if (inputTarget is Hotspot) {
+				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
+				player.moveTo (to, inputTarget);
+			} else if (inputTarget is Polygon) {
 				player.moveTo (local, null);
 			}
 		}
 		
 		private function onInputMove (e:*) : void
 		{
-			var stageLoc:Point = new Point (e.stageX, e.stageY);
-			var local:Point = current.Content.globalToLocal (stageLoc);
+			resolveInputTarget (new Point (e.stageX, e.stageY));	
+		}
+		
+		private function resolveInputTarget (stageLoc:Point) : void
+		{
+			var target:* = InputHelper.getTargetAtInput (
+				stageLoc, inventory, current);
 			
-			for each (var h:Hotspot in current.Spots) {
-				if (CollisionChecker.PointToPoly (local, h) && h.canMouseOver) {
-					mousedHotspot = h;
-					mouseHint.visible = true;
-					mouseHint.text = h.name;
-					return;
-				}
+			if (target is GameItem) {
+				inputHint.text = target.name;
+				inputHint.visible = true;
+			} else if (target is Hotspot) {
+				inputHint.text = target.name;
+				inputHint.visible = true;
+				inputTarget = target;
+			} else if (target is Polygon) {
+				inputTarget = target;
+				inputHint.visible = false;
+			} else {
+				inputTarget = null;
+				inputHint.visible = false;
 			}
-			mousedHotspot = null;
-			mouseHint.visible = false;
 		}
 	}
 }
