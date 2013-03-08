@@ -99,7 +99,7 @@ package levels
 				PolyFactory.CreateRectangle (798, 410, 120, 60),
 				onBackpackTouched);
 			
-			letter = CreateHotspot (Content.letter, "Letter",
+			letter = CreateHotspot (Content.letter, "Love Letter",
 				HO.IS_CONSUMED,
 				PolyFactory.CreateRectangle (889, 475, 100, 30),
 				onLetterTouched);
@@ -109,6 +109,7 @@ package levels
 				PolyFactory.CreateRectangle (836, 480, 60, 37),
 				onBatteriesTouched);
 			
+			fire.moveTo = new Point (311, 415);
 			tent.moveTo = new Point (229, 290);
 		}
 		
@@ -130,11 +131,15 @@ package levels
 		private var forest:Hotspot;
 		private var backpack:Hotspot;
 		
-		private function onFireTouched (h:Hotspot) : void
+		private function onFireTouched (h:Hotspot, item:GameItem) : void
 		{
+			if (item == null || item.name != "Matches") {
+				return;
+			}
 			Content.firelight.visible = false;
 			Content.fire.visible = true;
 			h.name = "Crackling fire";
+			Main.player.removeItem (item);
 		}
 		
 		private function onBatteriesTouched (h:Hotspot) : void
@@ -146,6 +151,9 @@ package levels
 		
 		private function onLetterTouched (h:Hotspot) : void
 		{
+			Main.player.addItem (new GameItem ("Love Letter",
+				"A love letter form Sarah's old boyfriend.",
+				art.getDefinition ("letterIcon") as Class));
 		}
 		
 		private function onTentTouched (h:Hotspot) : void

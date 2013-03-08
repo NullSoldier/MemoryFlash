@@ -23,6 +23,7 @@ package
 		public var moveQueue:Vector.<Point>;
 		public var isWalking:Boolean;
 		public var target:Hotspot;
+		public var targetItem:GameItem;
 		public var itemAdded:Function;
 		public var itemRemoved:Function;
 		
@@ -53,11 +54,12 @@ package
 				itemRemoved (item);
 		}
 		
-		public function moveTo (dest:Point, target:*) : void
+		public function moveTo (dest:Point, target:*, item:GameItem=null) : void
 		{
 			trace ("Moving to " + dest.toString());
 			clearMoveQueue();
 			this.target = target;
+			this.targetItem = item;
 
 			var path:Vector.<Point> = PathFinder.CalculatePath (pos, dest, Main.current.NavMesh);
 			for each (var p:Point in path) {
@@ -108,8 +110,9 @@ package
 			isMoving = false;
 			
 			if (moveQueue.length == 0 && target != null) {
-				target.activate();
+				target.activate (targetItem);
 				target = null;
+				targetItem = null;
 			}
 		}
 	}

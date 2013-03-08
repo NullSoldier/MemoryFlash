@@ -166,10 +166,14 @@ package
 		
 		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void
 		{
+			var local:Point = current.Content.globalToLocal (stageLoc);
+
 			resolveInputTarget (stageLoc);
-			
 			if (inputTarget is GameItem) {
 				RecipeBox.tryMix (item, inputTarget);
+			} else if (inputTarget is Hotspot) {
+				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
+				player.moveTo (to, inputTarget, item);
 			}
 		}
 	}

@@ -117,6 +117,7 @@ package
 			var slot:Object = e.currentTarget.tag;
 			draggedClip = slot.item.SpawnInventory();
 			draggedClip.tag = slot;
+			onDragMove (e);
 			clip.stage.addChild (draggedClip);
 				
 			clip.stage.addEventListener (MouseEvent.MOUSE_MOVE, onDragMove);

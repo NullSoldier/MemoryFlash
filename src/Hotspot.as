@@ -5,13 +5,15 @@ package
 	
 	import geom.Polygon;
 	
+	import helpers.AS3Helper;
+	
 	public class Hotspot extends Polygon
 	{
 		/**
 		@param clip
 		@param name The name to display in the inventory and moused over
 		@param args The HO arguments for this hotspot (see @class HO)
-		@param activated activated (self:HotSpot) : void
+		@param activated activated (self:HotSpot, item:GameItem) : void
 		@param vertices The vertexes which will make up the hit polygon
 		**/
 		public function Hotspot (clip:MovieClip, name:String, args:int,
@@ -38,7 +40,7 @@ package
 		public var willDisable:Boolean;
 		public var willDisapear:Boolean;
 		
-		public function activate() : void
+		public function activate (item:GameItem=null) : void
 		{
 			if (willDisapear) {
 				clip.visible = false;
@@ -48,7 +50,7 @@ package
 				canMouseOver = false;
 			}
 			if (activated != null) {
-				activated (this);
+				activated.apply (null,  [this, item].slice(0, activated.length));
 			}
 		}
 		
