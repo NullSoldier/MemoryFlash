@@ -32,7 +32,11 @@ package
 		
 		public function hasItem (name:String) : Boolean
 		{
-			return items.indexOf (name) != -1;
+			for each (var i:GameItem in items) {
+				if (i.name == name)
+					return true;
+			}
+			return false;
 		}
 		
 		public function addItem (item:GameItem) : void
@@ -40,6 +44,13 @@ package
 			items.push (item);
 			if (itemAdded != null)
 				itemAdded (item);
+		}
+		
+		public function removeItem (item:GameItem) : void
+		{
+			items.splice (items.indexOf (item), 1);
+			if (itemRemoved != null)
+				itemRemoved (item);
 		}
 		
 		public function moveTo (dest:Point, target:*) : void

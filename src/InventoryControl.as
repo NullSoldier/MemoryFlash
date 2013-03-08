@@ -26,10 +26,12 @@ package
 			this.art = art;
 			
 			p.itemAdded = itemAdded;
-			clip.addEventListener (Event.ENTER_FRAME, onEnterFrame);
+			p.itemRemoved = itemRemoved;
 			slotWidth = MCHelper.FromAppDomain (art, "itemSlot").width;
 		}
 		
+		// draggedItemTo (item:GameItem, stageLoc:Point) : void
+		public var itemDraggedTo:Function;
 		public var slotSpots:Vector.<PolyNode>;
 		public var clip:MovieClip;
 		
@@ -60,17 +62,28 @@ package
 			slot.container.addChild (slot.clip);
 		}
 		
+		private function itemRemoved (item:GameItem) : void
+		{
+			for (var i:* in slots) {
+				if (slots[i].item != null && slots[i].item == item) {
+					slots[i].item = null;
+					slots[i].container.removeChild (slots[i].clip);
+					return;
+				}
+			}
+		}
+		
 		private function findOrCreateSlot() : Object
 		{
 			for (var i:* in slots) {
-				if (slots[i] != null && slots[i].item == null)
+				if (slots[i].item == null)
 					return slots[i];
 			}
 			var slot:Object = createAddSlot (nextSlotIndex);
 			return slots[nextSlotIndex++] = slot;
 		}
 		
-		private function createAddSlot (index:int)
+		private function createAddSlot (index:int) : Object
 		{
 			var slot:Object = {
 				"index": index,
@@ -84,9 +97,12 @@ package
 				slot.container.y,
 				slot.container.width,
 				slot.container.height);
+			slot.container.addEventListener (MouseEvent.MOUSE_DOWN, onStartDrag);
+			slot.container.addEventListener (TouchEvent.TOUCH_BEGIN, onStartDrag);
 			
 			drawSlot (slot);
 			clip.addChild (slot.container);
+			return slot;
 		}
 
 		private function drawSlot (slot:Object) : void
@@ -100,17 +116,32 @@ package
 		{
 			var slot:Object = e.currentTarget.tag;
 			draggedClip = slot.item.SpawnInventory();
+			draggedClip.tag = slot;
+			clip.stage.addChild (draggedClip);
+				
+			clip.stage.addEventListener (MouseEvent.MOUSE_MOVE, onDragMove);
+			clip.stage.addEventListener (TouchEvent.TOUCH_MOVE, onDragMove);
+			clip.stage.addEventListener (MouseEvent.MOUSE_UP, onEndDrag);
+			clip.stage.addEventListener (TouchEvent.TOUCH_END, onEndDrag);
 		}
 		
 		private function onDragMove (e:*) : void
 		{
-			draggedClip.x = e.localX;
-			draggedClip.y = e.localY;
+			draggedClip.x = e.stageX - (draggedClip.width/2);
+			draggedClip.y = e.stageY - (draggedClip.height/2);
 		}
 		
 		private function onEndDrag (e:*) : void
 		{
+			clip.stage.removeChild (draggedClip );
 			
+			clip.stage.removeEventListener (MouseEvent.MOUSE_MOVE, onDragMove);
+			clip.stage.removeEventListener (TouchEvent.TOUCH_MOVE, onDragMove);
+			clip.stage.removeEventListener (MouseEvent.MOUSE_UP, onEndDrag);
+			clip.stage.removeEventListener (TouchEvent.TOUCH_END, onEndDrag);
+			
+			if (itemDraggedTo)
+				itemDraggedTo (draggedClip.tag.item, new Point (e.stageX, e.stageY));
 		}
 	}
 }

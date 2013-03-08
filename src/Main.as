@@ -64,6 +64,7 @@ package
 			var ui:MovieClip = MCHelper.FromAppDomain (art, "interface");
 			stage.addChild (ui);
 			inventory = new InventoryControl (ui, player, art);
+			inventory.itemDraggedTo = itemDraggedTo;
 			
 			addChild (inputHint = ui.mouseHint);
 			inputHint.visible = false;
@@ -127,7 +128,7 @@ package
 			resolveInputTarget (stageLoc);
 			
 			if (inputTarget is GameItem) {
-				//TODO: show description
+				trace ("Clicked on " + GameItem (inputTarget).name);
 			} else if (inputTarget is Hotspot) {
 				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
 				player.moveTo (to, inputTarget);
@@ -149,6 +150,7 @@ package
 			if (target is GameItem) {
 				inputHint.text = target.name;
 				inputHint.visible = true;
+				inputTarget = target;
 			} else if (target is Hotspot) {
 				inputHint.text = target.name;
 				inputHint.visible = true;
@@ -156,9 +158,18 @@ package
 			} else if (target is Polygon) {
 				inputTarget = target;
 				inputHint.visible = false;
-			} else {
+			} else { // Was dragged to nothing
 				inputTarget = null;
 				inputHint.visible = false;
+			}
+		}
+		
+		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void
+		{
+			resolveInputTarget (stageLoc);
+			
+			if (inputTarget is GameItem) {
+				RecipeBox.tryMix (item, inputTarget);
 			}
 		}
 	}

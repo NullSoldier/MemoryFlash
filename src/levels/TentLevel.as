@@ -107,6 +107,15 @@ package levels
 			lantern.moveTo = new Point (524, 513);
 			bag.moveTo = new Point (776, 512);
 			exit.moveTo = new Point (702, 469);
+			
+			RecipeBox.addRecipe ("Flashlight", "Batteries",
+				function(i1:GameItem, i2:GameItem):void {
+					Main.player.removeItem (i1);
+					Main.player.removeItem (i2);
+					Main.player.addItem (new GameItem ("Powered Flashlight",
+						"A flashlight, it's batteries are fully charged",
+						art.getDefinition ("flashlightOnIcon") as Class));
+				});
 		}
 		
 		public override function OnEnter() : void
@@ -168,7 +177,8 @@ package levels
 		
 		private function onExitTouched (h:Hotspot) : void
 		{
-			Main.inst.GotoScreen (Main.camp);
+			if (Main.player.hasItem ("Sarah's Sweater"))
+				Main.inst.GotoScreen (Main.camp);
 		}
 	}
 }
