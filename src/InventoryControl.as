@@ -115,6 +115,7 @@ package
 		private function onStartDrag (e:*) : void
 		{
 			var slot:Object = e.currentTarget.tag;
+			slot.container.visible = false;
 			draggedClip = slot.item.SpawnInventory();
 			draggedClip.tag = slot;
 			onDragMove (e);
@@ -134,7 +135,8 @@ package
 		
 		private function onEndDrag (e:*) : void
 		{
-			clip.stage.removeChild (draggedClip );
+			clip.stage.removeChild (draggedClip);
+			draggedClip.tag.container.visible = true;
 			
 			clip.stage.removeEventListener (MouseEvent.MOUSE_MOVE, onDragMove);
 			clip.stage.removeEventListener (TouchEvent.TOUCH_MOVE, onDragMove);
