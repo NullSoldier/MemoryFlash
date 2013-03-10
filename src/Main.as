@@ -55,9 +55,9 @@ package
 			player = new Player (art);
 			tent = new TentLevel (art);
 			camp = new CampLevel (art);
-			//forest = new ForestLevel (art);
+			forest = new ForestLevel (art);
 			GotoScreen (tent);
-			ScreenDebugger.DrawDebug (tent);
+			//ScreenDebugger.DrawDebug (tent);
 			//ScreenDebugger.DrawDebug (camp);
 			//ScreenDebugger.DrawDebug (forest);
 			
@@ -88,6 +88,7 @@ package
 			trace ("Going to screen: " + flash.utils.getQualifiedClassName(level));
 			
 			if (current != null) {
+				lastScreen = current;
 				container.removeChild (current.Content);
 			}
 			current = level;
@@ -125,14 +126,21 @@ package
 			var srcPoly:Polygon = PolyCheck.PointInLevelPoly (player.pos, current);
 			var stageLoc:Point = new Point (e.stageX, e.stageY);
 			var local:Point = current.Content.globalToLocal (stageLoc);
+			trace ("new Point (" + int (local.x) + ", " + int(local.y) + ")");
 			resolveInputTarget (stageLoc);
 			
-			if (inputTarget is GameItem) {
+			var item:GameItem = inputTarget as GameItem;
+			var hotspot:Hotspot = inputTarget as Hotspot;
+			var polygon:Polygon = inputTarget as Polygon;
+			
+			if (item) {
 				trace ("Clicked on " + GameItem (inputTarget).name);
-			} else if (inputTarget is Hotspot) {
+			}
+			else if (hotspot && hotspot.isUsable) {
 				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
 				player.moveTo (to, inputTarget);
-			} else if (inputTarget is Polygon) {
+			}
+			else if (polygon && !hotspot) {
 				player.moveTo (local, null);
 			}
 		}
@@ -140,6 +148,19 @@ package
 		private function onInputMove (e:*) : void
 		{
 			resolveInputTarget (new Point (e.stageX, e.stageY));	
+		}
+		
+		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void
+		{
+			var local:Point = current.Content.globalToLocal (stageLoc);
+			
+			resolveInputTarget (stageLoc);
+			if (inputTarget is GameItem) {
+				RecipeBox.tryMix (item, inputTarget);
+			} else if (inputTarget is Hotspot && Hotspot (inputTarget).isUsable) {
+				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
+				player.moveTo (to, inputTarget, item);
+			}
 		}
 		
 		private function resolveInputTarget (stageLoc:Point) : void
@@ -161,19 +182,6 @@ package
 			} else { // Was dragged to nothing
 				inputTarget = null;
 				inputHint.visible = false;
-			}
-		}
-		
-		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void
-		{
-			var local:Point = current.Content.globalToLocal (stageLoc);
-
-			resolveInputTarget (stageLoc);
-			if (inputTarget is GameItem) {
-				RecipeBox.tryMix (item, inputTarget);
-			} else if (inputTarget is Hotspot) {
-				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
-				player.moveTo (to, inputTarget, item);
 			}
 		}
 	}

@@ -4,7 +4,9 @@ package levels
 	import flash.display.Scene;
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
+	
 	import geom.*;
+	
 	import helpers.*;
 	
 	public class TentLevel extends Level
@@ -39,7 +41,7 @@ package levels
 			
 			bag = CreateHotspot (null,
 				"Duffle Bag",
-				HO.IS_ENABLED | HO.WILL_DISABLE,
+				HO.IS_ACTIVE | HO.WILL_DISABLE,
 				new Polygon ([
 					new Point (757, 443),
 					new Point (883, 417),
@@ -50,13 +52,13 @@ package levels
 			
 			lantern = CreateHotspot (Content.lantern,
 				"Lantern OFF",
-				HO.IS_ENABLED,
+				HO.IS_ACTIVE,
 				PolyFactory.CreateCircle (530, 315, 64),
 				onLanternTouched);
 				
 			CreateHotspot (Content.blanket,
 				"Blanket",
-				HO.IS_ENABLED | HO.WILL_DISABLE,
+				HO.IS_ACTIVE | HO.WILL_DISABLE,
 				new Polygon ([
 					new Point (0+150, 41+506),
 					new Point (256+150, -6+506),
@@ -65,7 +67,7 @@ package levels
 				onBlanketTouched);
 			
 			exit = CreateHotspot (null, "Tent Exit",
-				HO.IS_ENABLED,
+				HO.IS_ACTIVE,
 				new Polygon ([
 					new Point (620 + 90, 250),
 					new Point (607 + 90, 373),
@@ -76,7 +78,7 @@ package levels
 				onExitTouched);
 				
 			sweater = CreateHotspot (Content.sweater, "Sarah's Sweater",
-				HO.IS_ENABLED | HO.IS_CONSUMED,
+				HO.IS_ACTIVE | HO.IS_CONSUMED,
 				new Polygon ([
 					new Point (426-100, 563),
 					new Point (513-100, 551),
@@ -87,7 +89,7 @@ package levels
 				onSweaterTouched);
 				
 			CreateHotspot (Content.flashlight, "Flashlight",
-				HO.IS_ENABLED | HO.IS_CONSUMED,
+				HO.IS_ACTIVE | HO.IS_CONSUMED,
 				new Polygon ([
 					new Point (568 - 300, 493 - 0),
 					new Point (575 - 300, 427 - 0),
@@ -122,11 +124,12 @@ package levels
 		{
 			switch (Main.lastScreen) {
 				case null:
-					Main.player.clip.x = 440;
-					Main.player.clip.y = 495;
 				case Main.camp:
 					Main.player.clip.x = 690;
 					Main.player.clip.y = 485;
+					break;
+				default:
+					throw new Error ("Invalid entrance");
 			}
 		}
 
@@ -143,39 +146,39 @@ package levels
 			h.name = "Lantern " + (Content.light1.visible ? "ON" : "OFF");
 		}
 		
-		private function onBlanketTouched (h:Hotspot) : void
+		private function onBlanketTouched() : void
 		{
 			Content.blanket.gotoAndStop (2);
 			sweater.enable();
 		}
 		
-		private function onSweaterTouched (h:Hotspot) : void
+		private function onSweaterTouched() : void
 		{
 			Main.player.addItem (new GameItem ("Sarah's Sweater",
 				"Sarah's favorite sweater",
 				art.getDefinition ("sweaterIcon") as Class));
 		}
 		
-		private function onBagTouched (h:Hotspot) : void
+		private function onBagTouched() : void
 		{
 			matches.enable();
 		}
 		
-		private function onFlashlightTouched (h:Hotspot) : void
+		private function onFlashlightTouched() : void
 		{
 			Main.player.addItem (new GameItem ("Flashlight",
 				"A dead flashlight, it's missing batteries",
 				art.getDefinition ("flashlightOffIcon") as Class));
 		}
 		
-		private function onMatchesTouched (h:Hotspot) : void
+		private function onMatchesTouched() : void
 		{
 			Main.player.addItem (new GameItem ("Matches",
 				"A set of easy-strike matches",
 				art.getDefinition ("matchesIcon") as Class));
 		}
 		
-		private function onExitTouched (h:Hotspot) : void
+		private function onExitTouched() : void
 		{
 			if (Main.player.hasItem ("Sarah's Sweater"))
 				Main.inst.GotoScreen (Main.camp);

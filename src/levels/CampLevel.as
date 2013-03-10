@@ -1,10 +1,14 @@
 package levels
 {
+	import caurina.transitions.Tweener;
+	
 	import flash.display.MovieClip;
 	import flash.display.Scene;
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
+	
 	import geom.*;
+	
 	import helpers.*;
 	
 	public class CampLevel extends Level
@@ -66,7 +70,7 @@ package levels
 			LayerHolder.visible = false;
 			
 			tent = CreateHotspot (null, "Tent Entrance",
-				HO.IS_ENABLED,
+				HO.IS_ACTIVE,
 				new Polygon ([
 					new Point (3, 277),
 					new Point (333, 247),
@@ -75,7 +79,7 @@ package levels
 				onTentTouched);
 				
 			forest = CreateHotspot (null, "Dark Forest Entrance",
-				HO.IS_ENABLED,
+				HO.IS_ACTIVE,
 				new Polygon([
 					new Point (1087, 281),
 					new Point (1075, 110),
@@ -84,7 +88,7 @@ package levels
 				onForestTouched);
 			
 			fire = CreateHotspot (null, "Unlit fire",
-				HO.IS_ENABLED,
+				HO.IS_ACTIVE,
 				new Polygon([
 					new Point (50, 465),
 					new Point (184, 412),
@@ -95,7 +99,7 @@ package levels
 				onFireTouched);
 			
 			backpack = CreateHotspot (Content.backpack, "Backpack",
-				HO.IS_ENABLED | HO.WILL_DISABLE,
+				HO.IS_ACTIVE | HO.WILL_DISABLE,
 				PolyFactory.CreateRectangle (798, 410, 120, 60),
 				onBackpackTouched);
 			
@@ -109,8 +113,27 @@ package levels
 				PolyFactory.CreateRectangle (836, 480, 60, 37),
 				onBatteriesTouched);
 			
+			machete = CreateHotspot (Content.machete, "Machete",
+				HO.IS_CONSUMED,
+				PolyFactory.CreateRectangle (560, 420, 150, 60),
+				onMacheteTouched);
+				
+			boulder = CreateHotspot (null, "Pry Boulder Up",
+				HO.IS_ACTIVE,
+				new Polygon ([
+					new Point (485, 388),
+					new Point (555, 314),
+					new Point (626, 315),
+					new Point (676, 384),
+					new Point (673, 431),
+					new Point (589, 474),
+					new Point (484, 441)]),
+				onBoulderTouched);
+			
 			fire.moveTo = new Point (311, 415);
 			tent.moveTo = new Point (229, 290);
+			boulder.moveTo = new Point (665, 456);
+			forest.moveTo = new Point (1169, 330);
 		}
 		
 		public override function OnEnter() : void
@@ -120,6 +143,13 @@ package levels
 				case Main.tent:
 					Main.player.clip.x = 257;
 					Main.player.clip.y = 302;
+					break;
+				case Main.forest:
+					Main.player.clip.x = 1169;
+					Main.player.clip.y = 330;
+					break;
+				default:
+					throw new Error ("Invalid entrance");
 			}
 		}
 		
@@ -130,46 +160,72 @@ package levels
 		private var tent:Hotspot;
 		private var forest:Hotspot;
 		private var backpack:Hotspot;
+		private var boulder:Hotspot;
+		private var machete:Hotspot;
 		
 		private function onFireTouched (h:Hotspot, item:GameItem) : void
 		{
-			if (item == null || item.name != "Matches") {
+			if (!item || item.name != "Matches")
 				return;
-			}
+			
 			Content.firelight.visible = false;
 			Content.fire.visible = true;
 			h.name = "Crackling fire";
 			Main.player.removeItem (item);
 		}
 		
-		private function onBatteriesTouched (h:Hotspot) : void
+		private function onBoulderTouched (h:Hotspot, item:GameItem) : void
+		{
+			if (!item || item.name != "Bloody Branch")
+				return;
+			
+			Tweener.addTween (Content.boulder, {
+				x: Content.boulder.x - 50,
+				time: 0.15,
+				onComplete: function():void {
+					h.disable();
+					machete.enable();
+					Main.player.removeItem (item);
+				}
+			});
+		}
+		
+		private function onBatteriesTouched() : void
 		{
 			Main.player.addItem (new GameItem ("Batteries",
 				"Your tongue hurts - they are supprisingly strong",
 				art.getDefinition ("batteryIcon") as Class));
 		}
 		
-		private function onLetterTouched (h:Hotspot) : void
+		private function onLetterTouched() : void
 		{
 			Main.player.addItem (new GameItem ("Love Letter",
 				"A love letter form Sarah's old boyfriend.",
 				art.getDefinition ("letterIcon") as Class));
 		}
 		
-		private function onTentTouched (h:Hotspot) : void
+		private function onTentTouched() : void
 		{
 			Main.inst.GotoScreen (Main.tent);
 		}
 		
-		private function onForestTouched (h:Hotspot) : void
+		private function onForestTouched() : void
 		{
-			Main.inst.GotoScreen (Main.forest);
+			if (Main.player.hasItem ("Powered Flashlight"))
+				Main.inst.GotoScreen (Main.forest);
 		}
 		
-		private function onBackpackTouched (h:Hotspot) : void
+		private function onBackpackTouched() : void
 		{
 			batteries.enable();
 			letter.enable();
+		}
+		
+		private function onMacheteTouched() : void
+		{
+			Main.player.addItem (new GameItem ("Machete",
+				"A sharp blade used for cutting shrubbery and thickets down",
+				art.getDefinition ("macheteIcon") as Class));
 		}
 	}
 }

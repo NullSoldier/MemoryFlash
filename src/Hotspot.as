@@ -36,7 +36,7 @@ package
 		public var activated:Function;
 		
 		public var canMouseOver:Boolean;
-		public var isActive:Boolean;
+		public var isUsable:Boolean;
 		public var willDisable:Boolean;
 		public var willDisapear:Boolean;
 		
@@ -46,7 +46,7 @@ package
 				clip.visible = false;
 			}
 			if (willDisable) {
-				isActive = false;
+				isUsable = false;
 				canMouseOver = false;
 			}
 			if (activated != null) {
@@ -56,15 +56,21 @@ package
 		
 		public function enable() : void
 		{
-			isActive = true;
+			isUsable = true;
 			canMouseOver = true;
 			clip.visible = true;
+		}
+		
+		public function disable() : void
+		{
+			isUsable = false;
+			canMouseOver = false;
 		}
 		
 		private function parseArgs (args:int) : void
 		{
 			canMouseOver	= int (args & HO.CAN_MOUSEOVER) == HO.CAN_MOUSEOVER;
-			isActive 		= int (args & HO.IS_ACTIVE)		== HO.IS_ACTIVE;
+			isUsable 		= int (args & HO.IS_USABLE)		== HO.IS_USABLE;
 			willDisable		= int (args & HO.WILL_DISABLE) 	== HO.WILL_DISABLE;
 			willDisapear 	= int (args & HO.WILL_DISAPEAR) == HO.WILL_DISAPEAR;
 		}

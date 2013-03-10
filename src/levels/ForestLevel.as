@@ -2,35 +2,108 @@ package levels
 {
 	import flash.display.MovieClip;
 	import flash.display.Scene;
-	import flash.system.ApplicationDomain;
-	import helpers.*;
-	import geom.*;
 	import flash.geom.Point;
+	import flash.system.ApplicationDomain;
+	
+	import geom.*;
+	
+	import helpers.*;
 	
 	public class ForestLevel extends Level
 	{		
 		public function ForestLevel (art:ApplicationDomain)
 		{
-			var p:* = new Polygon ([
-				new Point (106, 469),
-				new Point (152, 442),
-				new Point (420, 433),
-				new Point (777, 429),
-				new Point (1000, 443),
-				new Point (997, 480),
-				new Point (896, 594),
-				new Point (627, 646),
-				new Point (345, 644),
-				new Point (159, 605)]);
+			var p1:* = new Polygon([
+				new Point (111, 233),
+				new Point (339, 304),
+				new Point (316, 367),
+				new Point (71, 259)]);
 			
-			var pnode:* = new PolyNode (p);
-			NavMesh = new <PolyNode> [pnode];
+			var p2:* = new Polygon([
+				new Point (316, 367),
+				new Point (240, 449),
+				new Point (160, 414),
+				new Point (242, 336)]);
 			
-			Content = MCHelper.FromAppDomain (art, "TentScene");
+			var p3:* = new Polygon([
+				new Point (293, 390),
+				new Point (241, 446),
+				new Point (492, 555),
+				new Point (515, 490)]);
 			
+			var p4:* = new Polygon([
+				new Point (515, 490),
+				new Point (770, 488),
+				new Point (715, 558),
+				new Point (492, 555)]);
 			
+			var p5:* = new Polygon ([
+				new Point (714, 560),
+				new Point (770, 488),
+				new Point (929, 542),
+				new Point (866, 653)]);
+			
+			var p6:* = new Polygon ([
+				new Point (928, 541),
+				new Point  (2032, 502),
+				new Point  (2026, 702),
+				new Point  (866, 653)]);
+			
+			var p1n:* = new PolyNode (p1);
+			var p2n:* = new PolyNode (p2);
+			var p3n:* = new PolyNode (p3);
+			var p4n:* = new PolyNode (p4);
+			var p5n:* = new PolyNode (p5);
+			var p6n:* = new PolyNode (p6);
+			
+			PolyLink.AttachLinks (277, 350, p1n, p2n);
+			PolyLink.AttachLinks (268, 414, p2n, p3n);
+			PolyLink.AttachLinks (505, 521, p3n, p4n);
+			PolyLink.AttachLinks (744, 514, p4n, p5n);
+			PolyLink.AttachLinks (891, 581, p5n, p6n);
+			
+			NavMesh = new <PolyNode> [
+				p1n,
+				p2n,
+				p3n,
+				p4n,
+				p5n,
+				p6n
+			];
+			
+			Content = MCHelper.FromAppDomain (art, "ForestScene");
+			
+			this.art = art;
 			LayerHolder = Content.holder;
 			LayerHolder.visible = false;
+			
+			exit = CreateHotspot (null, "Camp Entrance",
+				HO.IS_ACTIVE,
+				new Polygon ([
+					new Point (4, 271),
+					new Point (3, 4),
+					new Point (330, 114),
+					new Point (205, 258)]),
+				onExitTouched);
+			
+			shoe = CreateHotspot (Content.shoe, "Sarah's Shoe",
+				HO.IS_ACTIVE | HO.IS_CONSUMED,
+				PolyFactory.CreateCircle (353, 505, 35),
+				onShoeTouched);
+			
+			branch = CreateHotspot (Content.branch, "Bloody Branch",
+				HO.IS_ACTIVE | HO.IS_CONSUMED,
+				PolyFactory.CreateCircle (834, 448, 60),
+				onBranchTouched);
+			
+			CreateHotspot (null, "Mr Hoot",
+				HO.CAN_MOUSEOVER,
+				PolyFactory.CreateCircle (1104, 118, 60),
+				null);
+			
+			shoe.moveTo = new Point (360, 490);
+			branch.moveTo = new Point (800, 522);
+			exit.moveTo = new Point (150, 274);
 		}
 		
 		public override function OnEnter() : void
@@ -38,66 +111,39 @@ package levels
 			switch (Main.lastScreen)
 			{
 				case null:
-					Main.player.clip.x = 440;
-					Main.player.clip.y = 495;
+				case Main.camp:
+					Main.player.clip.x = 150;
+					Main.player.clip.y = 274;
+					break;
+				default:
+					throw new Error ("Invalid entrance");
 			}
 		}
 		
-		private var lantern:Hotspot;
-		private var bag:Hotspot;
+		private var art:ApplicationDomain;
+		private var branch:Hotspot;
+		private var shoe:Hotspot;
+		private var bushes:Hotspot;
+		private var body:Hotspot;
 		private var exit:Hotspot;
-		private var sweater:Hotspot;
 		
-		private function onBlanketTouched (h:Hotspot) : void
+		private function onShoeTouched() : void
 		{
-			//Main.soundManager.PlaySoundEffect ("blanket");
-			Content.blanket.gotoAndStop (2);
-			h.isActive = false;
-			h.canMouseOver = false;
-			sweater.isActive = true;
-			sweater.canMouseOver = true;
+			Main.player.addItem (new GameItem ("Sarah's Shoe",
+				"This shoe belongs to Sarah's right foot",
+				art.getDefinition ("shoeIcon") as Class));
 		}
 		
-		private function onLanternTouched (h:Hotspot) : void
+		private function onBranchTouched() : void
 		{
-			//Main.soundManager.PlaySoundEffect ("lantern");
-			Content.light1.visible = !Content.light1.visible;
-			h.name = "Lantern " + (Content.light1.visible ? "ON" : "OFF");
-		}
-		
-		private function onBagTouched (h:Hotspot) : void
-		{
-			Content.matches.visible = true;
-			h.isActive = false;
-			h.canMouseOver = false;
-		}
-		
-		private function onSweaterTouched (h:Hotspot) : void
-		{
-			//Main.soundManager.PlaySoundEffect ("sweater");
-			Content.sweater.visible = false;
-			h.isActive = false;
-			h.canMouseOver = false;
-		}
-		
-		private function onFlashlightTouched (h:Hotspot) : void
-		{
-			Content.flashlight.visible = false;
-			h.isActive = false;
-			h.canMouseOver = false;
-		}
-		
-		private function onMatchesTouched (h:Hotspot) : void
-		{
-			Content.matches.visible = false;
-			h.isActive = false;
-			h.canMouseOver = false;
+			Main.player.addItem (new GameItem ("Bloody Branch",
+				"A snapped branch covered in blood",
+				art.getDefinition ("branchIcon") as Class));
 		}
 		
 		private function onExitTouched (h:Hotspot) : void
 		{
 			Main.inst.GotoScreen (Main.camp);
-			//Main.soundManager.PlaySoundEffect ("zipper");
 		}
 	}
 }

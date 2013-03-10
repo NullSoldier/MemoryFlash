@@ -8,7 +8,7 @@ package helpers
 		public static function ArgNull (t:*, name:String = null) : void
 		{
 			if (t == null)
-				throw new Error ("Check: Argument " + name + " cannot be null.");	
+				throw new Error ("Check: Argument " + name + " cannot be null.");
 		}
 		
 		public static function PropertyDefined (t:Object, name:String)  : void

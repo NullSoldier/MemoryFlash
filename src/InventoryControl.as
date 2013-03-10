@@ -100,7 +100,7 @@ package
 			slot.container.addEventListener (MouseEvent.MOUSE_DOWN, onStartDrag);
 			slot.container.addEventListener (TouchEvent.TOUCH_BEGIN, onStartDrag);
 			
-			drawSlot (slot);
+			//drawSlot (slot);
 			clip.addChild (slot.container);
 			return slot;
 		}
@@ -141,7 +141,7 @@ package
 			clip.stage.removeEventListener (MouseEvent.MOUSE_UP, onEndDrag);
 			clip.stage.removeEventListener (TouchEvent.TOUCH_END, onEndDrag);
 			
-			if (itemDraggedTo)
+			if (itemDraggedTo != null)
 				itemDraggedTo (draggedClip.tag.item, new Point (e.stageX, e.stageY));
 		}
 	}
