@@ -1,14 +1,11 @@
 package levels
 {
 	import caurina.transitions.Tweener;
-	
 	import flash.display.MovieClip;
 	import flash.display.Scene;
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
-	
 	import geom.*;
-	
 	import helpers.*;
 	
 	public class CampLevel extends Level
