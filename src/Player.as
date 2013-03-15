@@ -61,7 +61,7 @@ package
 			this.target = target;
 			this.targetItem = item;
 
-			var path:Vector.<Point> = PathFinder.CalculatePath (pos, dest, Main.current.NavMesh);
+			var path:Vector.<Point> = PathFinder.CalculatePath (pos, dest, Main.currentLevel.NavMesh);
 			for each (var p:Point in path) {
 				moveQueue.push (p);
 			}

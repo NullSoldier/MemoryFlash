@@ -26,7 +26,7 @@ package
 		
 		public static var inst:Main;
 		public static var player:Player;
-		public static var current:Level;
+		public static var currentLevel:Level;
 		public static var lastScreen:Level;
 		public static var soundManager:SoundManager;
 		
@@ -88,16 +88,16 @@ package
 			Check.ArgNull (level, "level");
 			trace ("Going to screen: " + flash.utils.getQualifiedClassName(level));
 			
-			if (current != null) {
-				lastScreen = current;
-				container.removeChild (current.Content);
+			if (currentLevel != null) {
+				lastScreen = currentLevel;
+				container.removeChild (currentLevel.Content);
 			}
-			current = level;
-			container.addChild (current.Content);
-			var index:int = current.Content.getChildIndex (current.LayerHolder);
-			current.Content.addChildAt (player.clip, index);
-			current.OnEnter();
-			current = level;
+			currentLevel = level;
+			container.addChild (currentLevel.Content);
+			var index:int = currentLevel.Content.getChildIndex (currentLevel.LayerHolder);
+			currentLevel.Content.addChildAt (player.clip, index);
+			currentLevel.OnEnter();
+			currentLevel = level;
 		}
 		
 		private var ui:MovieClip;
@@ -116,7 +116,7 @@ package
 		
 		private function onEnterFrame (e:Event) : void
 		{
-			if (current == null) {
+			if (currentLevel == null) {
 				return;
 			}
 			player.update();
@@ -131,9 +131,9 @@ package
 		
 		private function onInputTouch (e:*) : void
 		{
-			var srcPoly:Polygon = PolyCheck.PointInLevelPoly (player.pos, current);
+			var srcPoly:Polygon = PolyCheck.PointInLevelPoly (player.pos, currentLevel);
 			var stageLoc:Point = new Point (e.stageX, e.stageY);
-			var local:Point = current.Content.globalToLocal (stageLoc);
+			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
 			trace ("new Point (" + int (local.x) + ", " + int(local.y) + ")");
 			resolveInputTarget (stageLoc);
 			
@@ -160,7 +160,7 @@ package
 		
 		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void
 		{
-			var local:Point = current.Content.globalToLocal (stageLoc);
+			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
 			
 			resolveInputTarget (stageLoc);
 			if (inputTarget is GameItem) {
@@ -174,7 +174,7 @@ package
 		private function resolveInputTarget (stageLoc:Point) : void
 		{
 			var target:* = InputHelper.getTargetAtInput (
-				stageLoc, inventory, current);
+				stageLoc, inventory, currentLevel);
 			
 			if (target is GameItem) {
 				inputHint.text = target.name;
