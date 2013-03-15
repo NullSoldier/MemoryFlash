@@ -5,6 +5,7 @@ package
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.*;
 	import flash.system.*;
 	import flash.text.TextField;
@@ -107,18 +108,25 @@ package
 		
 		private function onResize (e:Event) : void
 		{
-			trace ("Resizing to " + this.stage.stageWidth + "x" + this.stage.stageHeight);
-			this.scaleX = this.scaleY = this.stage.stageWidth / 1280;
-			this.y = (stage.stageHeight / 2) - (this.height / 2);
-			
+			trace ("Resizing to " + stage.stageWidth + "x" + stage.stageHeight);
+			scaleX = scaleY = stage.stageHeight / 720;
 			inputHint.x = 10;
-			inputHint.y = 720 - inputHint.height - 20;
+			inputHint.y = 720 - inputHint.height;
 		}
 		
 		private function onEnterFrame (e:Event) : void
 		{
-			if (current == null) return;
+			if (current == null) {
+				return;
+			}
 			player.update();
+			
+			// Make camera follow the player
+			var pBounds:Rectangle = player.clip.getBounds (container);
+			var cBounds:Rectangle = container.getBounds (stage);
+			var center:int = -pBounds.x - (pBounds.width/2) + (stage.stageWidth/2);
+			var min:int = -(cBounds.width-stage.stageWidth);
+			container.x = AS3Helper.Clamp (center, min, 0);
 		}
 		
 		private function onInputTouch (e:*) : void
