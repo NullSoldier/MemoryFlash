@@ -29,6 +29,8 @@ package
 		public static var currentLevel:Level;
 		public static var lastScreen:Level;
 		public static var soundManager:SoundManager;
+		public static const NATIVE_WIDTH:int = 1280;
+		public static const NATIVE_HEIGHT:int = 720;
 		
 		public function Main():void
 		{
@@ -51,35 +53,33 @@ package
 		{
 			trace ("All assets loaded!");
 			var art:ApplicationDomain = e.AssetLoaded["art"].Value;
-			addChild (container);
 			
 			player = new Player (art);
 			tent = new TentLevel (art);
 			camp = new CampLevel (art);
 			forest = new ForestLevel (art);
-			GotoScreen (tent);
-			//ScreenDebugger.DrawDebug (tent);
-			//ScreenDebugger.DrawDebug (camp);
-			//ScreenDebugger.DrawDebug (forest);
 			
 			var ui:MovieClip = MCHelper.FromAppDomain (art, "interface");
-			stage.addChild (ui);
 			inventory = new InventoryControl (ui, player, art);
 			inventory.itemDraggedTo = itemDraggedTo;
-			
-			addChild (inputHint = ui.mouseHint);
+			inputHint = ui.mouseHint;
 			inputHint.visible = false;
 			
-			addEventListener (Event.ENTER_FRAME, onEnterFrame);
+			light = new FlashlightControl (stage, player, art);
+			
+			stage.addChild (container);
+			stage.addChild (light);
+			stage.addChild (ui);
+			stage.addChild (inputHint);
+			
+			stage.addEventListener (Event.RESIZE, onResize);
+			stage.addEventListener (Event.ENTER_FRAME, onEnterFrame);
 			stage.addEventListener (MouseEvent.CLICK, onInputTouch);
 			stage.addEventListener (MouseEvent.MOUSE_MOVE, onInputMove);
 			stage.addEventListener (TouchEvent.TOUCH_MOVE, onInputMove);
-			stage.addEventListener (TouchEvent.TOUCH_END, function(e:*):void {
-				onInputMove (e);
-				onInputTouch (e);
-			});
-			stage.addEventListener (Event.RESIZE, onResize);
+			stage.addEventListener (TouchEvent.TOUCH_END, onInputEnd);
 			
+			GotoScreen (tent);
 			onResize (null);
 		}
 		
@@ -98,6 +98,9 @@ package
 			currentLevel.Content.addChildAt (player.clip, index);
 			currentLevel.OnEnter();
 			currentLevel = level;
+			
+			// turn on dynamic lighting
+			light.enable (level == Main.forest);
 		}
 		
 		private var ui:MovieClip;
@@ -105,13 +108,16 @@ package
 		private var inputTarget:*;
 		private var inputHint:TextField;
 		private var inventory:InventoryControl;
+		private var light:FlashlightControl;
 		
 		private function onResize (e:Event) : void
 		{
 			trace ("Resizing to " + stage.stageWidth + "x" + stage.stageHeight);
-			scaleX = scaleY = stage.stageHeight / 720;
+			container.scaleX = container.scaleY = stage.stageWidth / NATIVE_WIDTH;
+			container.y = (stage.stageHeight / 2) - (container.height / 2);
+			
 			inputHint.x = 10;
-			inputHint.y = 720 - inputHint.height;
+			inputHint.y = stage.stageHeight - inputHint.height;
 		}
 		
 		private function onEnterFrame (e:Event) : void
@@ -156,6 +162,12 @@ package
 		private function onInputMove (e:*) : void
 		{
 			resolveInputTarget (new Point (e.stageX, e.stageY));	
+		}
+		
+		private function onInputEnd (e:*) : void
+		{
+			onInputMove (e);
+			onInputTouch (e);
 		}
 		
 		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void

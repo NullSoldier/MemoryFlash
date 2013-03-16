@@ -27,6 +27,15 @@ package helpers
 			clip.y = position.y;
 		}
 		
+		public static function SetBounds (clip:DisplayObject,
+			 x:int, y:int, w:int, h:int) : void
+		{
+			clip.x = x;
+			clip.y = y;
+			clip.width = w;
+			clip.height = h;
+		}
+		
 		public static function CenterClip (clip:DisplayObject, forceStageUsage:Boolean = false) : void
 		{
 			var centerToStage:Boolean = !clip.parent || forceStageUsage;

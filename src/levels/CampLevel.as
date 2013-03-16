@@ -142,8 +142,8 @@ package levels
 					Main.player.clip.y = 302;
 					break;
 				case Main.forest:
-					Main.player.clip.x = 1169;
-					Main.player.clip.y = 330;
+					Main.player.clip.x = 1180;
+					Main.player.clip.y = 334;
 					break;
 				default:
 					throw new Error ("Invalid entrance");
