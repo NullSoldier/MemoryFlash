@@ -108,6 +108,7 @@ package
 			stage.addEventListener (TouchEvent.TOUCH_MOVE, onInputMove);
 			stage.addEventListener (TouchEvent.TOUCH_END, onInputEnd);
 			
+			// START GAME
 			GotoScreen (tent);
 			onResize (null);
 		}

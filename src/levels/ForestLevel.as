@@ -106,8 +106,7 @@ package levels
 		
 		public override function OnEnter() : void
 		{
-			switch (Main.lastScreen)
-			{
+			switch (Main.lastScreen) {
 				case null:
 				case Main.camp:
 					Main.player.clip.x = 150;
@@ -152,8 +151,9 @@ package levels
 			if (Main.player.hasItem ("machete")) {
 				Main.soundManager.PlayBackgroundMusic ("fast");
 			}
-			if (playedIntro)
+			if (playedIntro) {
 				return;
+			}
 			Main.soundManager.PlaySoundEffect ("enterwoods", "vo");
 			Main.soundManager.PlayBackgroundMusic ("medium");
 			playedIntro = true;
