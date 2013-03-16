@@ -6,9 +6,7 @@ package
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
-	
 	import geom.PolyNode;
-	
 	import helpers.*;
 	
 	public class InventoryControl

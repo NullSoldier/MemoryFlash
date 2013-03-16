@@ -1,7 +1,6 @@
 package 
 {
 	import assetloader.*;
-	
 	import flash.display.*;
 	import flash.events.*;
 	import flash.geom.Point;
@@ -10,11 +9,8 @@ package
 	import flash.system.*;
 	import flash.text.TextField;
 	import flash.utils.getQualifiedClassName;
-	
 	import geom.Polygon;
-	
 	import helpers.*;
-	
 	import levels.*;
 	
 	[SWF(width = "960", height = "640")]
@@ -23,7 +19,6 @@ package
 		public static var tent:TentLevel;
 		public static var camp:CampLevel;
 		public static var forest:ForestLevel;
-		
 		public static var inst:Main;
 		public static var player:Player;
 		public static var currentLevel:Level;
