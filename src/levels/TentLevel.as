@@ -129,6 +129,7 @@ package levels
 				default:
 					throw new Error ("Invalid entrance");
 			}
+			playIntro();
 		}
 
 		private var art:ApplicationDomain;
@@ -137,21 +138,25 @@ package levels
 		private var exit:Hotspot;
 		private var sweater:Hotspot;
 		private var matches:Hotspot;
+		private var playedIntro:Boolean;
 		
 		private function onLanternTouched (h:Hotspot) : void
 		{
+			Main.soundManager.PlaySoundEffect ("lantern", "sfx");
 			Content.light1.visible = !Content.light1.visible;
 			h.name = "Lantern " + (Content.light1.visible ? "ON" : "OFF");
 		}
 		
 		private function onBlanketTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("blanket", "sfx");
 			Content.blanket.gotoAndStop (2);
 			sweater.enable();
 		}
 		
 		private function onSweaterTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("sweater", "sfx");
 			Main.player.addItem (new GameItem ("Sarah's Sweater",
 				"Sarah's favorite sweater",
 				art.getDefinition ("sweaterIcon") as Class));
@@ -164,6 +169,7 @@ package levels
 		
 		private function onFlashlightTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("flashlight", "vo");
 			Main.player.addItem (new GameItem ("Flashlight",
 				"A dead flashlight, it's missing batteries",
 				art.getDefinition ("flashlightOffIcon") as Class));
@@ -171,6 +177,7 @@ package levels
 		
 		private function onMatchesTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("matches", "vo");
 			Main.player.addItem (new GameItem ("Matches",
 				"A set of easy-strike matches",
 				art.getDefinition ("matchesIcon") as Class));
@@ -178,8 +185,21 @@ package levels
 		
 		private function onExitTouched() : void
 		{
-			if (Main.player.hasItem ("Sarah's Sweater"))
+			if (Main.player.hasItem ("Sarah's Sweater")) {
+				Main.soundManager.PlaySoundEffect ("zipper", "sfx");
 				Main.inst.GotoScreen (Main.camp);
+			} else {
+				Main.soundManager.PlaySoundEffect ("coldanddark", "vo");
+			}
+		}
+		
+		private function playIntro() : void
+		{
+			if (playedIntro)
+				return;
+			Main.soundManager.PlaySoundEffect ("intro", "vo");
+			Main.soundManager.PlayBackgroundMusic ("slow");
+			playedIntro = true;
 		}
 	}
 }

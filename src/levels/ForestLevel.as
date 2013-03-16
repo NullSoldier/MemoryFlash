@@ -116,6 +116,7 @@ package levels
 				default:
 					throw new Error ("Invalid entrance");
 			}
+			playIntro();
 		}
 		
 		private var art:ApplicationDomain;
@@ -124,6 +125,7 @@ package levels
 		private var bushes:Hotspot;
 		private var body:Hotspot;
 		private var exit:Hotspot;
+		private var playedIntro:Boolean;
 		
 		private function onShoeTouched() : void
 		{
@@ -134,6 +136,7 @@ package levels
 		
 		private function onBranchTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("bloodybranch", "vo");
 			Main.player.addItem (new GameItem ("Bloody Branch",
 				"A snapped branch covered in blood",
 				art.getDefinition ("branchIcon") as Class));
@@ -142,6 +145,18 @@ package levels
 		private function onExitTouched (h:Hotspot) : void
 		{
 			Main.inst.GotoScreen (Main.camp);
+		}
+		
+		private function playIntro() : void
+		{
+			if (Main.player.hasItem ("machete")) {
+				Main.soundManager.PlayBackgroundMusic ("fast");
+			}
+			if (playedIntro)
+				return;
+			Main.soundManager.PlaySoundEffect ("enterwoods", "vo");
+			Main.soundManager.PlayBackgroundMusic ("medium");
+			playedIntro = true;
 		}
 	}
 }

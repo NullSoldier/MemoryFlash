@@ -148,6 +148,7 @@ package levels
 				default:
 					throw new Error ("Invalid entrance");
 			}
+			playIntro();
 		}
 		
 		private var art:ApplicationDomain;
@@ -159,6 +160,7 @@ package levels
 		private var backpack:Hotspot;
 		private var boulder:Hotspot;
 		private var machete:Hotspot;
+		private var playedIntro:Boolean;
 		
 		private function onFireTouched (h:Hotspot, item:GameItem) : void
 		{
@@ -169,12 +171,15 @@ package levels
 			Content.fire.visible = true;
 			h.name = "Crackling fire";
 			Main.player.removeItem (item);
+			Main.soundManager.PlaySoundEffect ("match", "sfx");
 		}
 		
 		private function onBoulderTouched (h:Hotspot, item:GameItem) : void
 		{
-			if (!item || item.name != "Bloody Branch")
+			if (!item || item.name != "Bloody Branch") {
+				Main.soundManager.PlaySoundEffect ("rock", "vo");
 				return;
+			}
 			
 			Tweener.addTween (Content.boulder, {
 				x: Content.boulder.x - 50,
@@ -189,6 +194,7 @@ package levels
 		
 		private function onBatteriesTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("batteries", "vo");
 			Main.player.addItem (new GameItem ("Batteries",
 				"Your tongue hurts - they are supprisingly strong",
 				art.getDefinition ("batteryIcon") as Class));
@@ -196,6 +202,8 @@ package levels
 		
 		private function onLetterTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("paper", "sfx");
+			Main.soundManager.PlaySoundEffect ("letter", "vo");
 			Main.player.addItem (new GameItem ("Love Letter",
 				"A love letter form Sarah's old boyfriend.",
 				art.getDefinition ("letterIcon") as Class));
@@ -203,13 +211,17 @@ package levels
 		
 		private function onTentTouched() : void
 		{
+			Main.soundManager.PlaySoundEffect ("blanket", "sfx");
 			Main.inst.GotoScreen (Main.tent);
 		}
 		
 		private function onForestTouched() : void
 		{
-			if (Main.player.hasItem ("Powered Flashlight"))
+			if (Main.player.hasItem ("Powered Flashlight")) {
 				Main.inst.GotoScreen (Main.forest);
+			} else {
+				Main.soundManager.PlaySoundEffect ("toodark", "vo");
+			}
 		}
 		
 		private function onBackpackTouched() : void
@@ -223,6 +235,14 @@ package levels
 			Main.player.addItem (new GameItem ("Machete",
 				"A sharp blade used for cutting shrubbery and thickets down",
 				art.getDefinition ("macheteIcon") as Class));
+		}
+		
+		private function playIntro() : void
+		{
+			if (playedIntro)
+				return;
+			Main.soundManager.PlaySoundEffect ("nothere", "vo");
+			playedIntro = true;
 		}
 	}
 }

@@ -7,13 +7,7 @@ package
 	import helpers.AS3Helper;
 
 	public class SoundManager
-	{
-		public function SoundManager()
-		{
-			sounds = { };
-			soundPools = { };
-		}
-		
+	{	
 		public function get IsMusicMuted() : Boolean { return musicMuted; }
 		public function set IsMusicMuted (value:Boolean) : void {
 			musicMuted = value;
@@ -55,18 +49,18 @@ package
 			sounds[name] = sound;
 		}
 		
-		public function PlaySoundEffect (name:String) : void
+		public function PlaySoundEffect (name:String, channel:String="") : void
 		{
-			if (soundEffectsMuted) {
-				return;
-			}
-			
 			if (!sounds[name]) {
 				trace ("WARNING: Sound effect with name: " + name + " not found");
 				return;
+			} else if (soundEffectsMuted) {
+				return;
 			}
-			
-			Sound (sounds[name]).play (0, 1);
+			if (channels[channel] && channel.length > 0) {
+				SoundChannel (channels[channel]).stop();
+			}
+			channels[channel] = Sound (sounds[name]).play (0, 1);
 		}
 		
 		public function PlayBackgroundMusic (name:String, volume:Number=1) : void
@@ -128,8 +122,9 @@ package
 		private var musicMuted:Boolean;
 		private var soundEffectsMuted:Boolean;
 		
-		private var sounds:Object;
-		private var soundPools:Object;
+		private var sounds:Object = { };
+		private var soundPools:Object = { };
+		private var channels:Object = { };
 		
 		private var music:Sound;
 		private var musicChannel:SoundChannel;

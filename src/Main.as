@@ -5,6 +5,7 @@ package
 	import flash.events.*;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.media.Sound;
 	import flash.net.*;
 	import flash.system.*;
 	import flash.text.TextField;
@@ -36,7 +37,32 @@ package
 			stage.color = 0x000000;
 			
 			var assets:Object = {
-				"art": { URI: "content.swf", AssetType: Asset.GRAPHICS }
+				"art": { URI: "content.swf", AssetType: Asset.GRAPHICS },
+				
+				"slow": { URI: "sfx/Slow.mp3", AssetType: Asset.SOUND },
+				"medium": { URI: "sfx/Medium.mp3", AssetType: Asset.SOUND },
+				"fast": { URI: "sfx/Fast.mp3", AssetType: Asset.SOUND },
+				
+				"zipper": { URI: "sfx/Zipper.mp3", AssetType: Asset.SOUND },
+				"blanket": { URI: "sfx/Blanket.mp3", AssetType: Asset.SOUND },
+				"lantern": { URI: "sfx/Lantern.mp3", AssetType: Asset.SOUND },
+				"sweater": { URI: "sfx/Sweater.mp3", AssetType: Asset.SOUND },
+				"match": { URI: "sfx/Match.mp3", AssetType: Asset.SOUND },
+				"paper": { URI: "sfx/Paper.mp3", AssetType: Asset.SOUND },
+				
+				"batteries": { URI: "sfx/dialog/Batteries.mp3", AssetType: Asset.SOUND },
+				"bloodybranch": { URI: "sfx/dialog/BloodyBranch.mp3", AssetType: Asset.SOUND },
+				"coldanddark": { URI: "sfx/dialog/ColdAndDark.mp3", AssetType: Asset.SOUND },
+				"enterwoods": { URI: "sfx/dialog/EnterWoods.mp3", AssetType: Asset.SOUND },
+				"flashlight": { URI: "sfx/dialog/Flashlight.mp3", AssetType: Asset.SOUND },
+				"intro": { URI: "sfx/dialog/Intro.mp3", AssetType: Asset.SOUND },
+				"letter": { URI: "sfx/dialog/Letter.mp3", AssetType: Asset.SOUND },
+				"matches": { URI: "sfx/dialog/Matches.mp3", AssetType: Asset.SOUND },
+				"nothere": { URI: "sfx/dialog/NotHereEither.mp3", AssetType: Asset.SOUND },
+				"pendant": { URI: "sfx/dialog/Pendant.mp3", AssetType: Asset.SOUND },
+				"remember": { URI: "sfx/dialog/Remember.mp3", AssetType: Asset.SOUND },
+				"rock": { URI: "sfx/dialog/Rock.mp3", AssetType: Asset.SOUND },
+				"toodark": { URI: "sfx/dialog/TooDark.mp3", AssetType: Asset.SOUND }
 			};
 			
 			var loader:AssetLoader = new AssetLoader();
@@ -66,6 +92,14 @@ package
 			stage.addChild (light);
 			stage.addChild (ui);
 			stage.addChild (inputHint);
+			
+			soundManager = new SoundManager();
+			for (var index:String in e.AssetLoaded) {
+				if (e.AssetLoaded[index].AssetType == Asset.SOUND) {
+					var asset:Asset = Asset(e.AssetLoaded[index]);
+					soundManager.AddResource (asset.Name, Sound (asset.Value));	
+				}
+			}
 			
 			stage.addEventListener (Event.RESIZE, onResize);
 			stage.addEventListener (Event.ENTER_FRAME, onEnterFrame);
