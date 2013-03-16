@@ -84,6 +84,15 @@ package levels
 					new Point (205, 258)]),
 				onExitTouched);
 			
+			bushes = CreateHotspot (null, "Thorny Bushes",
+				HO.IS_ACTIVE,
+				new Polygon([
+					new Point (1200, 615),
+					new Point (1403, 336),
+					new Point (1926, 388),
+					new Point (1919, 646)]),
+				onBushesTouched);
+			
 			shoe = CreateHotspot (Content.shoe, "Sarah's Shoe",
 				HO.IS_ACTIVE | HO.IS_CONSUMED,
 				PolyFactory.CreateCircle (353, 505, 35),
@@ -146,9 +155,19 @@ package levels
 			Main.inst.GotoScreen (Main.camp);
 		}
 		
+		private function onBushesTouched (h:Hotspot, item:GameItem) : void
+		{
+			if (item == null || item.name != "Machete")
+				return;
+			
+			h.disable();
+			Content.bushes.visible = false;
+			//TODO: add end of game
+		}
+		
 		private function playIntro() : void
 		{
-			if (Main.player.hasItem ("machete")) {
+			if (Main.player.hasItem ("Machete")) {
 				Main.soundManager.PlayBackgroundMusic ("fast");
 			}
 			if (playedIntro) {
