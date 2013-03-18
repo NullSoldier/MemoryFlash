@@ -169,7 +169,7 @@ package levels
 		
 		private function onFlashlightTouched() : void
 		{
-			Main.soundManager.PlaySoundEffect ("flashlight", "vo");
+			Main.dialog.play ("flashlight");
 			Main.player.addItem (new GameItem ("Flashlight",
 				"A dead flashlight, it's missing batteries",
 				art.getDefinition ("flashlightOffIcon") as Class));
@@ -177,7 +177,7 @@ package levels
 		
 		private function onMatchesTouched() : void
 		{
-			Main.soundManager.PlaySoundEffect ("matches", "vo");
+			Main.dialog.play ("matches");
 			Main.player.addItem (new GameItem ("Matches",
 				"A set of easy-strike matches",
 				art.getDefinition ("matchesIcon") as Class));
@@ -189,7 +189,7 @@ package levels
 				Main.soundManager.PlaySoundEffect ("zipper", "sfx");
 				Main.inst.GotoScreen (Main.camp);
 			} else {
-				Main.soundManager.PlaySoundEffect ("coldanddark", "vo");
+				Main.dialog.play ("coldanddark");
 			}
 		}
 		
@@ -197,7 +197,7 @@ package levels
 		{
 			if (playedIntro)
 				return;
-			Main.soundManager.PlaySoundEffect ("intro", "vo");
+			Main.dialog.play ("intro");
 			Main.soundManager.PlayBackgroundMusic ("slow");
 			playedIntro = true;
 		}

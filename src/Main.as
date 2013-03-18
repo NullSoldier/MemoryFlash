@@ -25,6 +25,8 @@ package
 		public static var currentLevel:Level;
 		public static var lastScreen:Level;
 		public static var soundManager:SoundManager;
+		public static var dialog:DialogSequencer;
+		
 		public static const NATIVE_WIDTH:int = 1280;
 		public static const NATIVE_HEIGHT:int = 720;
 		
@@ -83,6 +85,7 @@ package
 			var ui:MovieClip = MCHelper.FromAppDomain (art, "interface");
 			inventory = new InventoryControl (ui, player, art);
 			inventory.itemDraggedTo = itemDraggedTo;
+			subtitle = ui.subtitle;
 			inputHint = ui.mouseHint;
 			inputHint.visible = false;
 			
@@ -100,6 +103,8 @@ package
 					soundManager.AddResource (asset.Name, Sound (asset.Value));	
 				}
 			}
+			
+			dialog = new DialogSequencer (ui.subtitle, soundManager, DialogData.data);
 			
 			stage.addEventListener (Event.RESIZE, onResize);
 			stage.addEventListener (Event.ENTER_FRAME, onEnterFrame);
@@ -137,6 +142,7 @@ package
 		private var container:Sprite = new Sprite();
 		private var inputTarget:*;
 		private var inputHint:TextField;
+		private var subtitle:TextField;
 		private var inventory:InventoryControl;
 		private var light:FlashlightControl;
 		
@@ -148,6 +154,8 @@ package
 			
 			inputHint.x = 10;
 			inputHint.y = stage.stageHeight - inputHint.height;
+			subtitle.x = (stage.stageWidth/2) - (subtitle.width/2);
+			subtitle.y = stage.stageHeight * 0.2;
 		}
 		
 		private function onEnterFrame (e:Event) : void

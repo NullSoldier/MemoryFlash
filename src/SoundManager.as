@@ -49,18 +49,18 @@ package
 			sounds[name] = sound;
 		}
 		
-		public function PlaySoundEffect (name:String, channel:String="") : void
+		public function PlaySoundEffect (name:String, channel:String="") : SoundChannel
 		{
 			if (!sounds[name]) {
 				trace ("WARNING: Sound effect with name: " + name + " not found");
-				return;
+				return null;
 			} else if (soundEffectsMuted) {
-				return;
+				return null;
 			}
 			if (channels[channel] && channel.length > 0) {
 				SoundChannel (channels[channel]).stop();
 			}
-			channels[channel] = Sound (sounds[name]).play (0, 1);
+			return channels[channel] = Sound (sounds[name]).play (0, 1);
 		}
 		
 		public function PlayBackgroundMusic (name:String, volume:Number=1) : void
@@ -117,6 +117,17 @@ package
 			
 			soundPool.push (soundPool.splice (randomIndex, 1)[0]);
 			PlaySoundEffect (soundName);
+		}
+		
+		/**
+		 * Returns the length of a loaded sound in milliseconds
+		 */
+		public function GetLength (name:String) : Number
+		{
+			if (!sounds[name]) {
+				throw new Error ("Sound not found");
+			}
+			return Sound (sounds[name]).length;
 		}
 		
 		private var musicMuted:Boolean;

@@ -127,6 +127,11 @@ package levels
 					new Point (484, 441)]),
 				onBoulderTouched);
 			
+			bottle = CreateHotspot (Content.bottles, "Empty Wine Bottles",
+				HO.IS_CONSUMED | HO.IS_ACTIVE,
+				PolyFactory.CreateCircle (465, 600, 75),
+				onBottleTouched);
+			
 			fire.moveTo = new Point (311, 415);
 			tent.moveTo = new Point (229, 290);
 			boulder.moveTo = new Point (665, 456);
@@ -159,6 +164,7 @@ package levels
 		private var forest:Hotspot;
 		private var backpack:Hotspot;
 		private var boulder:Hotspot;
+		private var bottle:Hotspot;
 		private var machete:Hotspot;
 		private var playedIntro:Boolean;
 		
@@ -177,7 +183,7 @@ package levels
 		private function onBoulderTouched (h:Hotspot, item:GameItem) : void
 		{
 			if (!item || item.name != "Bloody Branch") {
-				Main.soundManager.PlaySoundEffect ("rock", "vo");
+				Main.dialog.play ("rock");
 				return;
 			}
 			
@@ -194,7 +200,7 @@ package levels
 		
 		private function onBatteriesTouched() : void
 		{
-			Main.soundManager.PlaySoundEffect ("batteries", "vo");
+			Main.dialog.play ("batteries");
 			Main.player.addItem (new GameItem ("Batteries",
 				"Your tongue hurts - they are supprisingly strong",
 				art.getDefinition ("batteryIcon") as Class));
@@ -203,7 +209,7 @@ package levels
 		private function onLetterTouched() : void
 		{
 			Main.soundManager.PlaySoundEffect ("paper", "sfx");
-			Main.soundManager.PlaySoundEffect ("letter", "vo");
+			Main.dialog.play ("letter");
 			Main.player.addItem (new GameItem ("Love Letter",
 				"A love letter form Sarah's old boyfriend.",
 				art.getDefinition ("letterIcon") as Class));
@@ -220,7 +226,7 @@ package levels
 			if (Main.player.hasItem ("Powered Flashlight")) {
 				Main.inst.GotoScreen (Main.forest);
 			} else {
-				Main.soundManager.PlaySoundEffect ("toodark", "vo");
+				Main.dialog.play ("toodark");
 			}
 		}
 		
@@ -237,11 +243,19 @@ package levels
 				art.getDefinition ("macheteIcon") as Class));
 		}
 		
+		private function onBottleTouched():void
+		{
+			Main.dialog.play ("remember")
+			Main.player.addItem (new GameItem ("Empty Wine Bottles",
+				"An empty wine bottle",
+				art.getDefinition ("bottleIcon") as Class));
+		}
+		
 		private function playIntro() : void
 		{
 			if (playedIntro)
 				return;
-			Main.soundManager.PlaySoundEffect ("nothere", "vo");
+			Main.dialog.play ("nothere");
 			playedIntro = true;
 		}
 	}

@@ -144,7 +144,7 @@ package levels
 		
 		private function onBranchTouched() : void
 		{
-			Main.soundManager.PlaySoundEffect ("bloodybranch", "vo");
+			Main.dialog.play ("bloodybranch");
 			Main.player.addItem (new GameItem ("Bloody Branch",
 				"A snapped branch covered in blood",
 				art.getDefinition ("branchIcon") as Class));
@@ -173,7 +173,7 @@ package levels
 			if (playedIntro) {
 				return;
 			}
-			Main.soundManager.PlaySoundEffect ("enterwoods", "vo");
+			Main.dialog.play ("enterwoods");
 			Main.soundManager.PlayBackgroundMusic ("medium");
 			playedIntro = true;
 		}
