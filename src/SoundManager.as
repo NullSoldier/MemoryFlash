@@ -60,9 +60,7 @@ package
 			if (channels[channel] && channel.length > 0) {
 				SoundChannel (channels[channel]).stop();
 			}
-			var c = channels[channel] = Sound (sounds[name]).play (0, 1);
-			c.stop();
-			return c;
+			return channels[channel] = Sound (sounds[name]).play (0, 1);
 		}
 		
 		public function PlayBackgroundMusic (name:String, volume:Number=1) : void
