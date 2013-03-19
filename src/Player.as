@@ -189,7 +189,7 @@ package
 			if (isBusy)
 				return;
 				
-			anims.play ("look", function():void {
+			anims.play ("look", isMirrored, function():void {
 				playAnim ("idle");
 			});
 		}
