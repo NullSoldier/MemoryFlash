@@ -34,6 +34,7 @@ package
 		public var name:String;
 		public var moveTo:Point;
 		public var activated:Function;
+		public var activateAnim:String;
 		
 		public var canMouseOver:Boolean;
 		public var isUsable:Boolean;

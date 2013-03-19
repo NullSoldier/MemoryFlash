@@ -111,6 +111,7 @@ package levels
 			shoe.moveTo = new Point (360, 490);
 			branch.moveTo = new Point (800, 522);
 			exit.moveTo = new Point (150, 274);
+			shoe.activateAnim = "pickup";
 		}
 		
 		public override function OnEnter() : void

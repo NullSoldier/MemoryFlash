@@ -13,14 +13,16 @@ package levels
 		{
 			this.art = art;
 			
+			//new Point (966, 470)
+			//new Point (177, 468)
+			
 			var p:* = new Polygon ([
-				new Point (106, 469),
-				new Point (152, 442),
-				new Point (420, 433),
-				new Point (777, 429),
-				new Point (1000, 443),
-				new Point (997, 480),
+				new Point (177, 468),
+				new Point (412, 466),
+				new Point (707, 465),
+				new Point (962, 482),
 				new Point (896, 594),
+				new Point (796, 644),
 				new Point (627, 646),
 				new Point (345, 644),
 				new Point (159, 605)]);
@@ -86,7 +88,7 @@ package levels
 					new Point (496-100, 633)]),
 				onSweaterTouched);
 				
-			CreateHotspot (Content.flashlight, "Flashlight",
+			flashlight = CreateHotspot (Content.flashlight, "Flashlight",
 				HO.IS_ACTIVE | HO.IS_CONSUMED,
 				new Polygon ([
 					new Point (568 - 300, 493 - 0),
@@ -108,6 +110,11 @@ package levels
 			bag.moveTo = new Point (776, 512);
 			exit.moveTo = new Point (702, 469);
 			
+			bag.activateAnim = "kick";
+			matches.activateAnim = "pickup";
+			sweater.activateAnim = "pickup";
+			flashlight.activateAnim = "pickup";
+			
 			RecipeBox.addRecipe ("Flashlight", "Batteries",
 				function(i1:GameItem, i2:GameItem):void {
 					Main.player.removeItem (i1);
@@ -122,6 +129,7 @@ package levels
 		{
 			switch (Main.lastScreen) {
 				case null:
+					Main.player.clip.visible = false;
 				case Main.camp:
 					Main.player.clip.x = 690;
 					Main.player.clip.y = 485;
@@ -129,12 +137,12 @@ package levels
 				default:
 					throw new Error ("Invalid entrance");
 			}
-			playIntro();
 		}
 
 		private var art:ApplicationDomain;
 		private var lantern:Hotspot;
 		private var bag:Hotspot;
+		private var flashlight:Hotspot;
 		private var exit:Hotspot;
 		private var sweater:Hotspot;
 		private var matches:Hotspot;
@@ -142,6 +150,7 @@ package levels
 		
 		private function onLanternTouched (h:Hotspot) : void
 		{
+			playIntro();
 			Main.soundManager.PlaySoundEffect ("lantern", "sfx");
 			Content.light1.visible = !Content.light1.visible;
 			h.name = "Lantern " + (Content.light1.visible ? "ON" : "OFF");
@@ -197,9 +206,14 @@ package levels
 		{
 			if (playedIntro)
 				return;
+			
 			Main.dialog.play ("intro");
 			Main.soundManager.PlayBackgroundMusic ("slow");
-			playedIntro = true;
+			Main.player.clip.visible = true;
+			Main.player.waitForAnim ("wakeup", function():void {
+				Main.player.playAnim ("idle");
+				playedIntro = true;
+			});
 		}
 	}
 }

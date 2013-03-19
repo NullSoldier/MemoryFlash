@@ -136,6 +136,11 @@ package levels
 			tent.moveTo = new Point (229, 290);
 			boulder.moveTo = new Point (665, 456);
 			forest.moveTo = new Point (1169, 330);
+			
+			bottle.activateAnim = "pickup";
+			letter.activateAnim = "pickup";
+			machete.activateAnim = "pickup";
+			batteries.activateAnim = "pickup";
 		}
 		
 		public override function OnEnter() : void
@@ -153,7 +158,6 @@ package levels
 				default:
 					throw new Error ("Invalid entrance");
 			}
-			playIntro();
 		}
 		
 		private var art:ApplicationDomain;
@@ -173,11 +177,15 @@ package levels
 			if (!item || item.name != "Matches")
 				return;
 			
-			Content.firelight.visible = false;
-			Content.fire.visible = true;
-			h.name = "Crackling fire";
-			Main.player.removeItem (item);
-			Main.soundManager.PlaySoundEffect ("match", "sfx");
+			Main.player.waitForAnim ("pickup", function():void {
+				Content.firelight.visible = false;
+				Content.fire.visible = true;
+				h.name = "Crackling fire";
+				Main.player.playAnim ("idle");
+				Main.player.removeItem (item);
+				Main.dialog.play ("nothere");
+				Main.soundManager.PlaySoundEffect ("match", "sfx");
+			});
 		}
 		
 		private function onBoulderTouched (h:Hotspot, item:GameItem) : void
@@ -249,14 +257,6 @@ package levels
 			Main.player.addItem (new GameItem ("Empty Wine Bottles",
 				"An empty wine bottle",
 				art.getDefinition ("bottleIcon") as Class));
-		}
-		
-		private function playIntro() : void
-		{
-			if (playedIntro)
-				return;
-			Main.dialog.play ("nothere");
-			playedIntro = true;
 		}
 	}
 }
