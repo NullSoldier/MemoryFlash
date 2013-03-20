@@ -248,9 +248,14 @@ package
 			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
 			resolveInputTarget (stageLoc);
 			
+			var isUsableHotspot:Boolean = inputTarget is Hotspot && Hotspot (inputTarget).isUsable;
+			var isRangedHotspot:Boolean = isUsableHotspot && inputTarget.moveTo.x == -1 && inputTarget.moveTo.y == -1;
+			
 			if (inputTarget is GameItem) {
 				RecipeBox.tryMix (item, inputTarget);
-			} else if (inputTarget is Hotspot && Hotspot (inputTarget).isUsable) {
+			} else if (isRangedHotspot) {
+				inputTarget.activate (item);
+			} else if (isUsableHotspot) {
 				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
 				player.moveTo (to, inputTarget, item);
 			}

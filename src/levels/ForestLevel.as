@@ -1,5 +1,6 @@
 package levels
 {
+	import caurina.transitions.Tweener;
 	import flash.display.MovieClip;
 	import flash.display.Scene;
 	import flash.geom.Point;
@@ -103,14 +104,15 @@ package levels
 				PolyFactory.CreateCircle (834, 448, 60),
 				onBranchTouched);
 			
-			CreateHotspot (null, "Mr Hoot",
-				HO.CAN_MOUSEOVER,
+			owl = CreateHotspot (null, "Mr Hoot",
+				HO.IS_ACTIVE,
 				PolyFactory.CreateCircle (1104, 118, 60),
-				null);
+				onOwlTouched);
 			
 			shoe.moveTo = new Point (360, 490);
 			branch.moveTo = new Point (800, 522);
 			exit.moveTo = new Point (150, 274);
+			owl.moveTo = new Point (-1, -1);
 			shoe.activateAnim = "pickup";
 		}
 		
@@ -130,6 +132,7 @@ package levels
 		
 		private var art:ApplicationDomain;
 		private var branch:Hotspot;
+		private var owl:Hotspot;
 		private var shoe:Hotspot;
 		private var bushes:Hotspot;
 		private var body:Hotspot;
@@ -177,6 +180,31 @@ package levels
 			Main.dialog.play ("enterwoods");
 			Main.soundManager.PlayBackgroundMusic ("medium");
 			playedIntro = true;
+		}
+		
+		private function onOwlTouched (ho:Hotspot, item:GameItem) : void
+		{
+			if (!item || item.name != "Empty Wine Bottles")
+				return;
+			
+			Main.player.removeItem (item);
+			var bottle:MovieClip = MCHelper.FromAppDomain (art, "bottle");
+			bottle.x = Main.player.clip.x;
+			bottle.y = Main.player.clip.y - (Main.player.clip.height/2);
+			Content.addChild (bottle);
+			Tweener.addTween (bottle, {
+				x: 1105,
+				y: 108,
+				rotation: 720,
+				time: 0.8,
+				transition: "LINEAR",
+				onComplete: function():void {
+					ho.disable();
+					Content.owl.visible = false;
+					Content.removeChild (bottle);
+					bottle.visible = false;	
+				}
+			});
 		}
 	}
 }
