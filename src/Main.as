@@ -38,6 +38,22 @@ package
 			stage.frameRate = 60;
 			stage.color = 0x000000;
 			
+			// Load and display loading screen
+			var parser:IAssetParser = new GraphicsAssetParser();
+			parser.addEventListener (AssetParserEvent.COMPLETED, loaded);
+			parser.Load ("loading", "loading.swf");
+			
+			function loaded (e:AssetParserEvent) : void {
+				var art:ApplicationDomain = e.AssetLoaded.Value as ApplicationDomain;
+				loading = MCHelper.FromAppDomain (art, "loading");				
+				stage.addChild (loading);
+				stage.addEventListener (Event.RESIZE, onResizeLoading);
+				loadAssets();
+			}
+		}
+		
+		private function loadAssets () : void
+		{
 			var assets:Object = {
 				"art": { URI: "content.swf", AssetType: Asset.GRAPHICS },
 				
@@ -116,6 +132,9 @@ package
 			// START GAME
 			GotoScreen (tent);
 			onResize (null);
+			
+			stage.removeChild (loading);
+			stage.removeEventListener (Event.RESIZE, onResizeLoading);
 		}
 		
 		public function GotoScreen (level:Level) : void
@@ -138,6 +157,7 @@ package
 			light.enable (level == Main.forest);
 		}
 		
+		private var loading:MovieClip;
 		private var ui:MovieClip;
 		private var container:Sprite = new Sprite();
 		private var inputTarget:*;
@@ -156,6 +176,12 @@ package
 			inputHint.y = stage.stageHeight - inputHint.height;
 			subtitle.x = (stage.stageWidth/2) - (subtitle.width/2);
 			subtitle.y = stage.stageHeight * 0.2;
+		}
+		
+		private function onResizeLoading (e:Event) : void
+		{
+			loading.width = stage.stageWidth;
+			loading.height = stage.stageHeight;
 		}
 		
 		private function onEnterFrame (e:Event) : void
