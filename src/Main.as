@@ -66,6 +66,8 @@ package
 				"medium": { URI: "sfx/Medium.mp3", AssetType: Asset.SOUND },
 				"fast": { URI: "sfx/Fast.mp3", AssetType: Asset.SOUND },
 				
+				"hoot": { URI: "sfx/Hoot.mp3", AssetType: Asset.SOUND },
+				"bottlebreak": { URI: "sfx/bottlebreak.mp3", AssetType: Asset.SOUND },
 				"zipper": { URI: "sfx/Zipper.mp3", AssetType: Asset.SOUND },
 				"blanket": { URI: "sfx/Blanket.mp3", AssetType: Asset.SOUND },
 				"lantern": { URI: "sfx/Lantern.mp3", AssetType: Asset.SOUND },

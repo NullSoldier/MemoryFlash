@@ -104,7 +104,7 @@ package levels
 				PolyFactory.CreateCircle (834, 448, 60),
 				onBranchTouched);
 			
-			owl = CreateHotspot (null, "Mr Hoot",
+			owl = CreateHotspot (null, "Mr. Hoot",
 				HO.IS_ACTIVE,
 				PolyFactory.CreateCircle (1104, 118, 60),
 				onOwlTouched);
@@ -196,9 +196,11 @@ package levels
 				x: 1105,
 				y: 108,
 				rotation: 720,
-				time: 0.8,
+				time: 1.25,
 				transition: "LINEAR",
 				onComplete: function():void {
+					Main.soundManager.PlaySoundEffect ("bottlebreak");
+					Main.soundManager.PlaySoundEffect ("hoot");
 					ho.disable();
 					Content.owl.visible = false;
 					Content.removeChild (bottle);
