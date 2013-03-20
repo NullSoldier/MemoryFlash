@@ -77,7 +77,6 @@ package
 			clearMoveQueue();
 			this.target = target;
 			this.targetItem = item;
-			this.isBusy = true;
 
 			var path:Vector.<Point> = PathFinder.CalculatePath (
 				pos, dest, Main.currentLevel.NavMesh);
@@ -134,7 +133,6 @@ package
 			var totalMoveTime:Number = Point.distance (to, new Point (clip.x, clip.y)) / MOVE_SPEED;
 			
 			isMoving = true;
-			isBusy = true;
 			isMirrored = to.x < clip.x;
 			playAnim ("walk")
 			
@@ -153,12 +151,11 @@ package
 			
 			if (moveQueue.length == 0 && target) {
 				if (target.activateAnim) {
-					anims.play (target.activateAnim, isMirrored, animDone);
+					waitForAnim (target.activateAnim, animDone);
 				} else {
 					animDone();
 				}
 				function animDone () : void {
-					isBusy = false
 					playAnim ("idle")
 					target.activate (targetItem);
 					target = null;
@@ -167,7 +164,6 @@ package
 			}
 			else if (moveQueue.length == 0 && !target) {
 				playAnim ("idle");
-				isBusy = false;
 			}
 		}
 		
@@ -189,7 +185,7 @@ package
 		
 		private function playLookAnim() : void
 		{
-			if (isBusy) return;
+			if (isBusy || isMoving) return;
 
 			anims.play ("look", isMirrored, function():void {
 				playAnim ("idle");
