@@ -137,6 +137,7 @@ package levels
 			boulder.moveTo = new Point (665, 456);
 			forest.moveTo = new Point (1169, 330);
 			
+			backpack.activateAnim = "kick";
 			bottle.activateAnim = "pickup";
 			letter.activateAnim = "pickup";
 			machete.activateAnim = "pickup";
