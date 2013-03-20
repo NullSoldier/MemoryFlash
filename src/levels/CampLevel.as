@@ -84,7 +84,7 @@ package levels
 					new Point (1268, 301)]),
 				onForestTouched);
 			
-			fire = CreateHotspot (null, "Unlit fire",
+			fire = CreateHotspot (null, "Light Fire",
 				HO.IS_ACTIVE,
 				new Polygon([
 					new Point (50, 465),
@@ -185,6 +185,7 @@ package levels
 				Main.player.removeItem (item);
 				Main.dialog.play ("nothere");
 				Main.soundManager.PlaySoundEffect ("match", "sfx");
+				Main.inst.invalidateHint();
 			});
 		}
 		

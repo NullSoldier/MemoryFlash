@@ -51,7 +51,7 @@ package levels
 				onBagTouched);
 			
 			lantern = CreateHotspot (Content.lantern,
-				"Lantern OFF",
+				"Turn lantern ON",
 				HO.IS_ACTIVE,
 				PolyFactory.CreateCircle (530, 315, 64),
 				onLanternTouched);
@@ -153,7 +153,8 @@ package levels
 			playIntro();
 			Main.soundManager.PlaySoundEffect ("lantern", "sfx");
 			Content.light1.visible = !Content.light1.visible;
-			h.name = "Lantern " + (Content.light1.visible ? "ON" : "OFF");
+			h.name = "Turn lantern " + (Content.light1.visible ? "ON" : "OFF");
+			Main.inst.invalidateHint();
 		}
 		
 		private function onBlanketTouched() : void

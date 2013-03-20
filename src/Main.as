@@ -52,6 +52,11 @@ package
 			}
 		}
 		
+		public function invalidateHint() : void
+		{
+			onInputMove (cachedInputEvent);
+		}
+		
 		private function loadAssets () : void
 		{
 			var assets:Object = {
@@ -165,6 +170,7 @@ package
 		private var subtitle:TextField;
 		private var inventory:InventoryControl;
 		private var light:FlashlightControl;
+		private var cachedInputEvent:*;
 		
 		private function onResize (e:Event) : void
 		{
@@ -225,7 +231,8 @@ package
 		
 		private function onInputMove (e:*) : void
 		{
-			resolveInputTarget (new Point (e.stageX, e.stageY));	
+			cachedInputEvent = e;
+			resolveInputTarget (new Point (e.stageX, e.stageY));
 		}
 		
 		private function onInputEnd (e:*) : void
