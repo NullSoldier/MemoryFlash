@@ -159,7 +159,7 @@ package
 			currentLevel = level;
 			
 			// turn on dynamic lighting
-			light.enable (level == Main.forest);
+			light.setEnable (level == Main.forest);
 		}
 		
 		private var loading:MovieClip;

@@ -33,17 +33,20 @@ package
 			stage.addEventListener (TouchEvent.TOUCH_MOVE, onTouch);
 		}
 		
-		public function enable (enable:Boolean) : void
+		public function setEnable (enable:Boolean) : void
 		{
+			enabled = enable;
 			light.visible = enable;
 			c1.visible = enable;
 			c2.visible = enable;
 			c3.visible = enable;
 			c4.visible = enable;
 			
-			snapToPlayer();
+			if (enable)
+				snapToPlayer();
 		}
 		
+		private var enabled:Boolean;
 		private var player:Player;
 		private var light:MovieClip;
 		private var c1:Sprite;
@@ -73,17 +76,24 @@ package
 			MCHelper.SetBounds (c2, 0, light.y, light.x+fix, stage.stageHeight-light.y+fix);
 			MCHelper.SetBounds (c3, b.right-fix, light.y, stage.stageWidth - b.right+fix, stage.stageHeight-light.y);
 			MCHelper.SetBounds (c4, light.x, b.bottom-fix, light.width, stage.stageHeight - b.bottom+fix);
+			
+			c1.visible = lightPos.y > 0;
+			c2.visible = lightPos.x > 0;
 		}
 		
 		private function onTouch (e:*) : void
 		{
+			if (!enabled)
+				return;
+			
 			invalidate (new Point (e.stageX, e.stageY));
 		}
 		
 		private function snapToPlayer () : void
 		{
-			var local:Rectangle = player.clip.getBounds (stage);
-			invalidate (new Point (local.x, local.y))
+			//TODO: hard coded for forest level
+			// Couldn't fix this bug
+			invalidate (new Point (121, 227));
 		}
 	}
 }
