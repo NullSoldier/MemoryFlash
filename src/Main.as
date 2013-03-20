@@ -210,9 +210,11 @@ package
 		
 		private function itemDraggedTo (item:GameItem, stageLoc:Point) : void
 		{
-			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
+			if (player.isBusy) return;
 			
+			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
 			resolveInputTarget (stageLoc);
+			
 			if (inputTarget is GameItem) {
 				RecipeBox.tryMix (item, inputTarget);
 			} else if (inputTarget is Hotspot && Hotspot (inputTarget).isUsable) {

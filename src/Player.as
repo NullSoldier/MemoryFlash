@@ -71,15 +71,16 @@ package
 		
 		public function moveTo (dest:Point, target:*, item:GameItem=null) : void
 		{
-			if (isBusy)
-				return;
+			if (isBusy) return;
 			
 			trace ("Moving to " + dest.toString());
 			clearMoveQueue();
 			this.target = target;
 			this.targetItem = item;
+			this.isBusy = true;
 
-			var path:Vector.<Point> = PathFinder.CalculatePath (pos, dest, Main.currentLevel.NavMesh);
+			var path:Vector.<Point> = PathFinder.CalculatePath (
+				pos, dest, Main.currentLevel.NavMesh);
 			for each (var p:Point in path) {
 				moveQueue.push (p);
 			}
@@ -112,10 +113,10 @@ package
 			}
 		}
 		
-		private var tween:TweenTask;
+		public var isBusy:Boolean; 
 		private var isMoving:Boolean;
 		private var isMirrored:Boolean;
-		private var isBusy:Boolean; 
+		private var tween:TweenTask;
 		private const MOVE_SPEED:int = 280; //PIXEL/SEC
 		
 		private function clearMoveQueue() : void
@@ -149,7 +150,7 @@ package
 		private function onFinishedMove() : void
 		{
 			isMoving = false;
-			isBusy = false;
+			
 			if (moveQueue.length == 0 && target) {
 				if (target.activateAnim) {
 					anims.play (target.activateAnim, isMirrored, animDone);
@@ -157,6 +158,7 @@ package
 					animDone();
 				}
 				function animDone () : void {
+					isBusy = false
 					playAnim ("idle")
 					target.activate (targetItem);
 					target = null;
@@ -164,7 +166,8 @@ package
 				}
 			}
 			else if (moveQueue.length == 0 && !target) {
-				playAnim ("idle")
+				playAnim ("idle");
+				isBusy = false;
 			}
 		}
 		
@@ -186,9 +189,8 @@ package
 		
 		private function playLookAnim() : void
 		{
-			if (isBusy)
-				return;
-				
+			if (isBusy) return;
+
 			anims.play ("look", isMirrored, function():void {
 				playAnim ("idle");
 			});
