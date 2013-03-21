@@ -212,17 +212,26 @@ package
 			var srcPoly:Polygon = PolyCheck.PointInLevelPoly (player.pos, currentLevel);
 			var stageLoc:Point = new Point (e.stageX, e.stageY);
 			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
-			trace ("new Point (" + int (local.x) + ", " + int(local.y) + ")");
 			resolveInputTarget (stageLoc);
+			trace ("new Point (" + int (local.x) + ", " + int(local.y) + ")");
 			
 			var item:GameItem = inputTarget as GameItem;
 			var hotspot:Hotspot = inputTarget as Hotspot;
 			var polygon:Polygon = inputTarget as Polygon;
 			
+			var isUsableHotspot:Boolean = hotspot && hotspot.isUsable;
+			var isRangedHotspot:Boolean = isUsableHotspot
+				&& hotspot.moveTo
+				&& hotspot.moveTo.x == -1
+				&& hotspot.moveTo.y == -1;
+			
 			if (item) {
 				trace ("Clicked on " + GameItem (inputTarget).name);
 			}
-			else if (hotspot && hotspot.isUsable) {
+			else if (isRangedHotspot) {
+				trace ("Clicked on ranged hotspot");
+			}
+			else if (isUsableHotspot) {
 				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
 				player.moveTo (to, inputTarget);
 			}
@@ -250,16 +259,22 @@ package
 			var local:Point = currentLevel.Content.globalToLocal (stageLoc);
 			resolveInputTarget (stageLoc);
 			
-			var isUsableHotspot:Boolean = inputTarget is Hotspot && Hotspot (inputTarget).isUsable;
-			var isRangedHotspot:Boolean = isUsableHotspot && inputTarget.moveTo.x == -1 && inputTarget.moveTo.y == -1;
+			var targetItem:GameItem = inputTarget as GameItem;
+			var hotspot:Hotspot = inputTarget as Hotspot;
 			
-			if (inputTarget is GameItem) {
-				RecipeBox.tryMix (item, inputTarget);
+			var isUsableHotspot:Boolean = hotspot && hotspot.isUsable;
+			var isRangedHotspot:Boolean = isUsableHotspot
+				&& hotspot.moveTo
+				&& hotspot.moveTo.x == -1
+				&& hotspot.moveTo.y == -1;
+			
+			if (targetItem) {
+				RecipeBox.tryMix (item, targetItem);
 			} else if (isRangedHotspot) {
-				inputTarget.activate (item);
+				hotspot.activate (item);
 			} else if (isUsableHotspot) {
-				var to:Point = inputTarget.moveTo ? inputTarget.moveTo : local;
-				player.moveTo (to, inputTarget, item);
+				var to:Point = hotspot.moveTo ? hotspot.moveTo : local;
+				player.moveTo (to, hotspot, item);
 			}
 		}
 		
