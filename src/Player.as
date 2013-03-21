@@ -117,6 +117,7 @@ package
 		private var isMirrored:Boolean;
 		private var tween:TweenTask;
 		private const MOVE_SPEED:int = 280; //PIXEL/SEC
+		private const ANIM_MOVE_THRESHOLD:Number = 0.1;
 		
 		private function clearMoveQueue() : void
 		{
@@ -133,8 +134,10 @@ package
 			var totalMoveTime:Number = Point.distance (to, new Point (clip.x, clip.y)) / MOVE_SPEED;
 			
 			isMoving = true;
-			isMirrored = to.x < clip.x;
-			playAnim ("walk")
+			if (to.x - clip.x != 0)
+				isMirrored = to.x < clip.x;
+			if (totalMoveTime >= ANIM_MOVE_THRESHOLD)
+				playAnim ("walk")
 			
 			Tweener.addTween (clip, {
 				x: to.x,
