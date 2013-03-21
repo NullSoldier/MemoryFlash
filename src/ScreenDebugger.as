@@ -22,7 +22,7 @@ package
 		{
 			var s:Sprite = new Sprite();
 			for each (var node:PolyNode in level.NavMesh)
-				DrawPolygon (s.graphics, node.poly, 0x0074B9);
+				DrawPolygon (s.graphics, node.poly, node.enabled ? 0x0074B9 : 0x9B30FF);
 			for each (var spot:Hotspot in level.Spots)
 				DrawPolygon (s.graphics, spot, spot.willDisapear ? 0xFF0000 : 0x00FF00);
 			level.Content.addChild (s);
