@@ -15,7 +15,7 @@ package
 		public static function PointInNavMesh (p:Point, n:Vector.<PolyNode>) : PolyNode
 		{
 			for each (var node:PolyNode in n) {
-				if (PolyCheck.PointInPoly (p, node.poly)) {
+				if (node.enabled && PolyCheck.PointInPoly (p, node.poly)) {
 					return node;
 				}
 			}

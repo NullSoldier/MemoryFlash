@@ -44,9 +44,17 @@ package levels
 			
 			var p6:* = new Polygon ([
 				new Point (928, 541),
+				new Point (1249, 533),
+				new Point (1178, 668),
+				new Point (866, 653)]);
+			
+			var p7:* = new Polygon ([
+				new Point (1249, 533),
 				new Point  (2032, 502),
 				new Point  (2026, 702),
-				new Point  (866, 653)]);
+				new Point (1178, 668)
+				]);
+			
 			
 			var p1n:* = new PolyNode (p1);
 			var p2n:* = new PolyNode (p2);
@@ -54,12 +62,16 @@ package levels
 			var p4n:* = new PolyNode (p4);
 			var p5n:* = new PolyNode (p5);
 			var p6n:* = new PolyNode (p6);
+			bodyNode = new PolyNode (p7);
 			
 			PolyLink.AttachLinks (277, 350, p1n, p2n);
 			PolyLink.AttachLinks (268, 414, p2n, p3n);
 			PolyLink.AttachLinks (505, 521, p3n, p4n);
 			PolyLink.AttachLinks (744, 514, p4n, p5n);
 			PolyLink.AttachLinks (891, 581, p5n, p6n);
+			PolyLink.AttachLinks (1214, 609, p6n, bodyNode);
+			
+			bodyNode.enabled = false;
 			
 			NavMesh = new <PolyNode> [
 				p1n,
@@ -67,7 +79,8 @@ package levels
 				p3n,
 				p4n,
 				p5n,
-				p6n
+				p6n,
+				bodyNode
 			];
 			
 			Content = MCHelper.FromAppDomain (art, "ForestScene");
@@ -109,6 +122,7 @@ package levels
 				PolyFactory.CreateCircle (1104, 118, 60),
 				onOwlTouched);
 			
+			bushes.moveTo = new Point (1182, 588);
 			shoe.moveTo = new Point (360, 490);
 			branch.moveTo = new Point (800, 522);
 			exit.moveTo = new Point (150, 274);
@@ -138,6 +152,7 @@ package levels
 		private var body:Hotspot;
 		private var exit:Hotspot;
 		private var playedIntro:Boolean;
+		private var bodyNode:PolyNode;
 		
 		private function onShoeTouched() : void
 		{
@@ -166,6 +181,7 @@ package levels
 			
 			h.disable();
 			Content.bushes.visible = false;
+			bodyNode.enabled = true;
 			//TODO: add end of game
 		}
 		

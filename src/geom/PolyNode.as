@@ -10,6 +10,7 @@ package geom
 		
 		public var poly:Polygon;
 		public var links:Vector.<PolyLink>;
+		public var enabled:Boolean = true;
 		
 		public function AddLink (link:PolyLink) : void
 		{
