@@ -64,7 +64,7 @@ package
 				sound: "letter",
 				dialog: {
 					"0": "What's this?",
-					"1.81": "A love letter form my wifes old boyfriend?",
+					"1.81": "A love letter from my wife's old boyfriend?",
 					"5.53": "I remember fighting about this last night."
 				}
 			},
